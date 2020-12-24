@@ -1,4 +1,33 @@
-### EDA, Preprocessing, and Tweet Analysis Notebook
+# Tweet Analysis - Apple and Google
+
+#### Author: Joseph Denney
+#### Email: joseph.d.denney@gmail.com
+#### github: www.github.com/josephdenney/Tweet_Analysis
+
+## Introduction
+
+### Problem and Purpose
+
+#### A client is looking to design and manufacture a new smart phone and will invariably compete with Apple and Google products. They have provided us with a data set of Tweets and would like more detail regarding negatively and positively charged Tweets directed at both iPhone OS and Android OS phones. 
+##### Our challenges are -
+##### * 1. To highlight any negative features of iPhones and Androids so that they can reduce them in their new product and 
+##### * 2. To highlight positive features of iPhones and Androids so that they can implement or improve them in their own product
+##### * 3. To provide recommendations that will improve their future product
+
+## Table of Contents
+#### 1.3 EDA and Data Preprocessing
+#### 1.4 Modeling
+#### 1.5 Evaluate Models
+#### 1.6 Keras Neural Network Binary Classifier
+#### 1.7 NLP Using Word2Vec
+#### 1.8 Keras Neural Network Multiple Classifier
+#### 1.9 Question 1 and Recommendation
+#### 1.10 Question 2 and Recommendation
+#### 1.11 Question 3 and Recommendation
+
+## EDA and Data Preprocessing
+
+### Library, function, and data imports
 
 
 ```python
@@ -9,7 +38,9 @@ import re
 import nltk
 import matplotlib.pyplot as plt
 import logging
-logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=logging.INFO)
+logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', 
+                    level=logging.INFO)
+
 from gensim.models import Word2Vec
 from keras.models import Sequential
 from keras.layers import Dense
@@ -27,11 +58,18 @@ from nltk import word_tokenize, FreqDist
 from applesauce import model_scoring, cost_benefit_analysis, evaluate_model
 from applesauce import model_opt, single_model_opt
 
-from sklearn.metrics import classification_report, confusion_matrix, plot_confusion_matrix, accuracy_score, precision_recall_curve, f1_score, precision_score, recall_score
-from sklearn.ensemble import RandomForestClassifier, AdaBoostClassifier, GradientBoostingClassifier 
-from sklearn.naive_bayes import BernoulliNB, CategoricalNB, GaussianNB, MultinomialNB
-from sklearn.feature_extraction.text import TfidfVectorizer,CountVectorizer, TfidfTransformer
+from sklearn.metrics import classification_report, confusion_matrix 
+from sklearn.metrics import plot_confusion_matrix, accuracy_score
+from sklearn.metrics import precision_recall_curve, f1_score, precision_score
+from sklearn.metrics import recall_score
+from sklearn.ensemble import RandomForestClassifier, AdaBoostClassifier 
+from sklearn.ensemble import GradientBoostingClassifier 
+from sklearn.naive_bayes import BernoulliNB, CategoricalNB, GaussianNB 
+from sklearn.naive_bayes import MultinomialNB
+from sklearn.feature_extraction.text import TfidfVectorizer,CountVectorizer 
+from sklearn.feature_extraction.text import TfidfTransformer
 from sklearn.model_selection import GridSearchCV, train_test_split
+from sklearn.utils import resample
 
 from keras.preprocessing.sequence import pad_sequences
 from keras.layers import Input, Dense, LSTM, Embedding
@@ -54,23 +92,41 @@ from keras.preprocessing import text, sequence
 
 
 ```python
-nlp = spacy.load('en_core_web_sm')
+nlp = spacy.load("en_core_web_sm")
 ```
 
 
 ```python
 print(stopwords)
-print(nlp.Defaults.stop_words)
+print(nlp.Defaults.stop_words) 
+# view list of stopwords
 ```
 
     <WordListCorpusReader in 'C:\\Users\\josep\\AppData\\Roaming\\nltk_data\\corpora\\stopwords'>
-    {'mine', 'seemed', 'n’t', 'via', 'up', 'own', 'when', 'hers', 'but', 'elsewhere', 'yet', '’ve', 'these', 'serious', 'fifty', 'became', 'without', 'be', 'every', 'toward', 'anyway', 'with', 'each', 'upon', 'besides', 'since', 'him', 'make', "'ve", 'all', 'regarding', 'she', 'among', 'while', 'n‘t', 'bottom', 'in', 'together', 'last', 'amount', 'none', 'empty', 'may', 'between', 'front', 'anything', 'well', 'indeed', 'why', 'yourself', '’re', 'no', 'they', 'back', 'almost', 'any', 'put', 'whom', 'we', 'both', 'others', 'ours', 'being', 'of', 'who', 'twenty', 'thereafter', 'please', 'thereby', 'see', 'whereby', '‘ve', 'thru', 'two', 'not', '’d', 'within', 'unless', 'where', 'however', 'various', 'six', 'something', 'nine', 'move', 'becoming', 'his', 'ourselves', 'whole', 'hence', 'i', 'on', 'its', 'thus', 'someone', 'therefore', '‘re', 'otherwise', 'same', 'here', 'seem', 'themselves', 'our', 'how', 'meanwhile', 'yourselves', '’s', 'very', 'out', 'many', 'my', 'those', 'were', 'used', 'myself', "'ll", 'third', 'beyond', "'re", '‘ll', 'next', 'go', 'through', 'except', 'other', 'and', 'amongst', 'few', 'are', 'one', 'show', 'thereupon', 'would', 'though', "'m", 'itself', 'a', 'can', 'anywhere', 'down', 'whereupon', 'say', '‘d', 'neither', 'becomes', 'your', 'been', '‘m', 'although', 'everywhere', 'there', 'then', 'per', 'throughout', 'wherein', 'their', 'that', 'to', 'everything', 'somewhere', 'after', 'keep', 'you', 'should', 'at', 'still', 'formerly', 'himself', 'which', 'whenever', 'across', 'least', 'whereafter', 'often', 'sometimes', 'fifteen', 'whither', 'anyone', 'thence', 'whence', 'moreover', 'enough', 'noone', 'along', 'eleven', 'into', 'from', 'whether', 'so', 'now', "'s", 'is', 'former', 'does', 'wherever', 'he', 'give', 'us', 'beside', 'herself', 'sometime', 'cannot', 'beforehand', 'also', 'nevertheless', 'might', 'towards', 'most', 'done', 'over', '’ll', 'hereby', 'under', 'am', 'if', 'onto', "n't", 'first', 'during', 'forty', 'doing', 'call', 'name', 'rather', '‘s', 'less', 'nobody', 'do', 'nor', 'could', 'latterly', '’m', 'more', 'afterwards', 'really', 'even', 'never', 'ten', 'latter', 'off', 'an', 'ever', 'mostly', 'what', 'hundred', 'further', 'due', 'behind', 'alone', 'the', 'take', 'too', 'her', 'using', 'namely', 'as', 'several', 'had', 'was', 'did', 'get', 'else', 'than', 'yours', 'before', 're', 'whereas', 'because', 'perhaps', 'side', 'nothing', 'therein', 'sixty', 'somehow', "'d", 'whoever', 'once', 'them', 'either', 'whatever', 'whose', 'until', 'three', 'about', 'must', 'anyhow', 'such', 'already', 'above', 'everyone', 'eight', 'has', 'top', 'five', 'for', 'always', 'have', 'herein', 'will', 'ca', 'seems', 'four', 'another', 'only', 'this', 'below', 'become', 'me', 'again', 'quite', 'around', 'part', 'by', 'hereafter', 'twelve', 'nowhere', 'seeming', 'hereupon', 'against', 'full', 'much', 'just', 'made', 'some', 'it', 'or'}
+    {'forty', 'thereupon', 'hundred', 'sometime', 'whither', 'yet', 'its', 'nine', 'wherein', 'hence', 'whatever', 'then', '‘s', 'not', 'same', 'of', 'mostly', '’d', 'still', 'last', 'four', 'her', 'towards', 're', 'just', 'is', 'out', 'fifteen', 'becomes', '‘ve', 'we', 'somehow', 'his', 'get', 'thereby', 'at', 'in', 'serious', 'sometimes', 'beyond', 'please', 'another', 'who', 'ourselves', '‘d', 'mine', 'part', 'him', 'somewhere', 'per', 'move', 'therefore', 'our', '‘m', 'whom', "'ve", 'over', 'else', 'indeed', 'regarding', 'namely', 'from', 'whose', 'an', 'whence', 'ever', 'why', 'if', 'under', 'will', 'much', 'latterly', 'down', '’re', 'it', 'whereupon', 'other', 'five', 'show', 'are', 'there', 'also', 'which', 'and', 'many', 'them', 'or', 'well', 'most', 'about', 'was', 'former', 'should', 'always', 'thru', 'both', 'might', 'but', 'someone', 'unless', 'whether', 'up', 'hers', 'eight', 'had', 'you', 'onto', 'hereby', 'besides', 'some', 'again', 'does', 'various', 'nor', 'none', 'back', 'using', 'quite', 'ten', 'has', "'s", 'above', 'here', 'everywhere', 'bottom', 'cannot', 'yourselves', 'been', 'own', 'seem', 'too', 'formerly', 'must', 'through', 'used', 'often', 'least', 'now', 'since', 'so', 'anything', 'seems', 'yours', 'itself', 'six', 'twenty', '’m', 'around', 'however', 'full', 'he', 'do', 'third', 'toward', 'thence', 'to', 'amount', 'enough', 'all', 'hereupon', 'i', 'herein', 'those', 'three', 'n‘t', 'either', 'alone', 'us', 'less', 'between', 'behind', 'ca', 'nowhere', 'every', 'others', 'these', 'could', 'seeming', 'doing', 'due', 'no', 'therein', 'side', 'only', 'though', 'nevertheless', 'really', 'each', 'thus', 'hereafter', 'the', 'whole', 'although', 'whereby', 'became', 'beside', 'via', 'am', 'further', 'when', '’ve', 'may', 'across', 'seemed', 'front', "'ll", 'for', 'can', 'me', 'almost', 'were', 'give', 'together', 'rather', 'would', 'perhaps', 'several', "'m", 'neither', 'made', 'whereafter', 'fifty', 'two', 'than', 'put', 'as', 'being', 'wherever', 'such', 'everything', 'n’t', 'herself', 'elsewhere', 'yourself', 'meanwhile', 'by', 'off', "n't", 'even', 'during', 'before', 'how', 'their', 'amongst', 'whenever', 'once', 'make', 'nobody', 'because', 'beforehand', 'himself', 'anywhere', 'latter', 'never', 'your', 'say', 'go', 'anyhow', 'among', 'with', 'until', 'otherwise', 'take', 'that', "'re", 'while', '’s', 'become', 'where', 'did', 'everyone', 'sixty', 'keep', 'name', 'any', 'whoever', 'done', 'along', 'anyway', 'moreover', 'into', 'whereas', 'be', '‘ll', 'noone', 'few', 'on', 'see', 'call', 'top', 'ours', 'one', 'empty', 'what', 'anyone', 'she', 'against', 'twelve', 'already', 'eleven', '’ll', 'below', 'next', 'afterwards', 'my', 'except', 'thereafter', 'after', 'this', "'d", 'first', '‘re', 'more', 'something', 'becoming', 'throughout', 'very', 'within', 'upon', 'nothing', 'a', 'themselves', 'myself', 'without', 'they', 'have'}
     
 
 
 ```python
 df = pd.read_csv('data/product_tweets.csv',encoding='latin1')
 ```
+
+
+```python
+df.info()
+```
+
+    <class 'pandas.core.frame.DataFrame'>
+    RangeIndex: 9093 entries, 0 to 9092
+    Data columns (total 3 columns):
+     #   Column                                              Non-Null Count  Dtype 
+    ---  ------                                              --------------  ----- 
+     0   tweet_text                                          9092 non-null   object
+     1   emotion_in_tweet_is_directed_at                     3291 non-null   object
+     2   is_there_an_emotion_directed_at_a_brand_or_product  9093 non-null   object
+    dtypes: object(3)
+    memory usage: 213.2+ KB
+    
 
 
 ```python
@@ -142,6 +198,34 @@ df.head()
 
 
 ```python
+df['emotion_in_tweet_is_directed_at'].unique()
+```
+
+
+
+
+    array(['iPhone', 'iPad or iPhone App', 'iPad', 'Google', nan, 'Android',
+           'Apple', 'Android App', 'Other Google product or service',
+           'Other Apple product or service'], dtype=object)
+
+
+
+
+```python
+df['emotion_in_tweet_is_directed_at'].count()
+```
+
+
+
+
+    3291
+
+
+
+### Data Exploration and Column Title Cleanup
+
+
+```python
 df['is_there_an_emotion_directed_at_a_brand_or_product'].unique()
 ```
 
@@ -156,7 +240,8 @@ df['is_there_an_emotion_directed_at_a_brand_or_product'].unique()
 
 ```python
 df = df.rename(columns= {'is_there_an_emotion_directed_at_a_brand_or_product'
-                         :'Emotion','emotion_in_tweet_is_directed_at': 'Platform'})
+                         :'Emotion',
+                         'emotion_in_tweet_is_directed_at': 'Platform'})
 ```
 
 
@@ -231,6 +316,95 @@ df.head()
 </div>
 
 
+
+
+```python
+df.groupby(df['Platform']).count()
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Tweet</th>
+      <th>Emotion</th>
+    </tr>
+    <tr>
+      <th>Platform</th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>Android</th>
+      <td>78</td>
+      <td>78</td>
+    </tr>
+    <tr>
+      <th>Android App</th>
+      <td>81</td>
+      <td>81</td>
+    </tr>
+    <tr>
+      <th>Apple</th>
+      <td>661</td>
+      <td>661</td>
+    </tr>
+    <tr>
+      <th>Google</th>
+      <td>430</td>
+      <td>430</td>
+    </tr>
+    <tr>
+      <th>Other Apple product or service</th>
+      <td>35</td>
+      <td>35</td>
+    </tr>
+    <tr>
+      <th>Other Google product or service</th>
+      <td>293</td>
+      <td>293</td>
+    </tr>
+    <tr>
+      <th>iPad</th>
+      <td>946</td>
+      <td>946</td>
+    </tr>
+    <tr>
+      <th>iPad or iPhone App</th>
+      <td>470</td>
+      <td>470</td>
+    </tr>
+    <tr>
+      <th>iPhone</th>
+      <td>297</td>
+      <td>297</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+### Dummify Target Column
 
 
 ```python
@@ -330,7 +504,8 @@ df_dummify.sum() # class bias
 
 ```python
 df.info()
-df = pd.merge(df, df_dummify, how='outer',on=df.index) # ran this code, dummify emotion data
+df = pd.merge(df, df_dummify, how='outer',on=df.index) 
+# ran this code, dummify emotion data
 ```
 
     <class 'pandas.core.frame.DataFrame'>
@@ -467,9 +642,10 @@ df.head()
 
 
 ```python
-df = df.rename(columns = {"I can't tell": "Uncertain", 'Negative emotion': 'Negative'
-                          , 'No emotion toward brand or product': 'No Emotion'
-                          , 'Positive emotion':'Positive'})
+df = df.rename(columns = {"I can't tell": "Uncertain", 
+                          'Negative emotion': 'Negative', 
+                          'No emotion toward brand or product': 'No Emotion',
+                          'Positive emotion':'Positive'})
 ```
 
 
@@ -481,7 +657,7 @@ df.to_csv('Full_DF')
 
 
 ```python
-corpus = list(df['Tweet'])
+corpus = list(df['Tweet']) # verify corpus list
 corpus[:10]
 ```
 
@@ -501,7 +677,118 @@ corpus[:10]
 
 
 
-### Tokenize the Words
+### Platform Negative Tweet Table
+
+
+```python
+df.groupby(by=df['Platform']).sum()
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Uncertain</th>
+      <th>Negative</th>
+      <th>No Emotion</th>
+      <th>Positive</th>
+    </tr>
+    <tr>
+      <th>Platform</th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>Android</th>
+      <td>0.0</td>
+      <td>8.0</td>
+      <td>1.0</td>
+      <td>69.0</td>
+    </tr>
+    <tr>
+      <th>Android App</th>
+      <td>0.0</td>
+      <td>8.0</td>
+      <td>1.0</td>
+      <td>72.0</td>
+    </tr>
+    <tr>
+      <th>Apple</th>
+      <td>2.0</td>
+      <td>95.0</td>
+      <td>21.0</td>
+      <td>543.0</td>
+    </tr>
+    <tr>
+      <th>Google</th>
+      <td>1.0</td>
+      <td>68.0</td>
+      <td>15.0</td>
+      <td>346.0</td>
+    </tr>
+    <tr>
+      <th>Other Apple product or service</th>
+      <td>0.0</td>
+      <td>2.0</td>
+      <td>1.0</td>
+      <td>32.0</td>
+    </tr>
+    <tr>
+      <th>Other Google product or service</th>
+      <td>1.0</td>
+      <td>47.0</td>
+      <td>9.0</td>
+      <td>236.0</td>
+    </tr>
+    <tr>
+      <th>iPad</th>
+      <td>4.0</td>
+      <td>125.0</td>
+      <td>24.0</td>
+      <td>793.0</td>
+    </tr>
+    <tr>
+      <th>iPad or iPhone App</th>
+      <td>0.0</td>
+      <td>63.0</td>
+      <td>10.0</td>
+      <td>397.0</td>
+    </tr>
+    <tr>
+      <th>iPhone</th>
+      <td>1.0</td>
+      <td>103.0</td>
+      <td>9.0</td>
+      <td>184.0</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+### Tokenize and Create Bag of Words
 
 
 ```python
@@ -543,332 +830,332 @@ stopword_list
 
 
 
-    ['mine',
-     'seemed',
-     'n’t',
-     'via',
-     'up',
-     'own',
-     'when',
-     'hers',
-     'but',
-     'elsewhere',
-     'yet',
-     '’ve',
-     'these',
-     'serious',
-     'fifty',
-     'became',
-     'without',
-     'be',
-     'every',
-     'toward',
-     'anyway',
-     'with',
-     'each',
-     'upon',
-     'besides',
-     'since',
-     'him',
-     'make',
-     "'ve",
-     'all',
-     'regarding',
-     'she',
-     'among',
-     'while',
-     'n‘t',
-     'bottom',
-     'in',
-     'together',
-     'last',
-     'amount',
-     'none',
-     'empty',
-     'may',
-     'between',
-     'front',
-     'anything',
-     'well',
-     'indeed',
-     'why',
-     'yourself',
-     '’re',
-     'no',
-     'they',
-     'back',
-     'almost',
-     'any',
-     'put',
-     'whom',
-     'we',
-     'both',
-     'others',
-     'ours',
-     'being',
-     'of',
-     'who',
-     'twenty',
-     'thereafter',
-     'please',
-     'thereby',
-     'see',
-     'whereby',
-     '‘ve',
-     'thru',
-     'two',
-     'not',
-     '’d',
-     'within',
-     'unless',
-     'where',
-     'however',
-     'various',
-     'six',
-     'something',
-     'nine',
-     'move',
-     'becoming',
-     'his',
-     'ourselves',
-     'whole',
-     'hence',
-     'i',
-     'on',
-     'its',
-     'thus',
-     'someone',
-     'therefore',
-     '‘re',
-     'otherwise',
-     'same',
-     'here',
-     'seem',
-     'themselves',
-     'our',
-     'how',
-     'meanwhile',
-     'yourselves',
-     '’s',
-     'very',
-     'out',
-     'many',
-     'my',
-     'those',
-     'were',
-     'used',
-     'myself',
-     "'ll",
-     'third',
-     'beyond',
-     "'re",
-     '‘ll',
-     'next',
-     'go',
-     'through',
-     'except',
-     'other',
-     'and',
-     'amongst',
-     'few',
-     'are',
-     'one',
-     'show',
+    ['forty',
      'thereupon',
-     'would',
-     'though',
-     "'m",
-     'itself',
-     'a',
-     'can',
-     'anywhere',
-     'down',
-     'whereupon',
-     'say',
-     '‘d',
-     'neither',
-     'becomes',
-     'your',
-     'been',
-     '‘m',
-     'although',
-     'everywhere',
-     'there',
-     'then',
-     'per',
-     'throughout',
-     'wherein',
-     'their',
-     'that',
-     'to',
-     'everything',
-     'somewhere',
-     'after',
-     'keep',
-     'you',
-     'should',
-     'at',
-     'still',
-     'formerly',
-     'himself',
-     'which',
-     'whenever',
-     'across',
-     'least',
-     'whereafter',
-     'often',
-     'sometimes',
-     'fifteen',
-     'whither',
-     'anyone',
-     'thence',
-     'whence',
-     'moreover',
-     'enough',
-     'noone',
-     'along',
-     'eleven',
-     'into',
-     'from',
-     'whether',
-     'so',
-     'now',
-     "'s",
-     'is',
-     'former',
-     'does',
-     'wherever',
-     'he',
-     'give',
-     'us',
-     'beside',
-     'herself',
-     'sometime',
-     'cannot',
-     'beforehand',
-     'also',
-     'nevertheless',
-     'might',
-     'towards',
-     'most',
-     'done',
-     'over',
-     '’ll',
-     'hereby',
-     'under',
-     'am',
-     'if',
-     'onto',
-     "n't",
-     'first',
-     'during',
-     'forty',
-     'doing',
-     'call',
-     'name',
-     'rather',
-     '‘s',
-     'less',
-     'nobody',
-     'do',
-     'nor',
-     'could',
-     'latterly',
-     '’m',
-     'more',
-     'afterwards',
-     'really',
-     'even',
-     'never',
-     'ten',
-     'latter',
-     'off',
-     'an',
-     'ever',
-     'mostly',
-     'what',
      'hundred',
-     'further',
-     'due',
-     'behind',
-     'alone',
-     'the',
-     'take',
-     'too',
-     'her',
-     'using',
-     'namely',
-     'as',
-     'several',
-     'had',
-     'was',
-     'did',
-     'get',
-     'else',
-     'than',
-     'yours',
-     'before',
-     're',
-     'whereas',
-     'because',
-     'perhaps',
-     'side',
-     'nothing',
-     'therein',
-     'sixty',
-     'somehow',
-     "'d",
-     'whoever',
-     'once',
-     'them',
-     'either',
+     'sometime',
+     'whither',
+     'yet',
+     'its',
+     'nine',
+     'wherein',
+     'hence',
      'whatever',
-     'whose',
-     'until',
-     'three',
-     'about',
-     'must',
-     'anyhow',
-     'such',
-     'already',
-     'above',
-     'everyone',
-     'eight',
-     'has',
-     'top',
-     'five',
-     'for',
-     'always',
-     'have',
-     'herein',
-     'will',
-     'ca',
-     'seems',
+     'then',
+     '‘s',
+     'not',
+     'same',
+     'of',
+     'mostly',
+     '’d',
+     'still',
+     'last',
      'four',
-     'another',
-     'only',
-     'this',
-     'below',
-     'become',
-     'me',
-     'again',
-     'quite',
-     'around',
-     'part',
-     'by',
-     'hereafter',
-     'twelve',
-     'nowhere',
-     'seeming',
-     'hereupon',
-     'against',
-     'full',
-     'much',
+     'her',
+     'towards',
+     're',
      'just',
-     'made',
-     'some',
+     'is',
+     'out',
+     'fifteen',
+     'becomes',
+     '‘ve',
+     'we',
+     'somehow',
+     'his',
+     'get',
+     'thereby',
+     'at',
+     'in',
+     'serious',
+     'sometimes',
+     'beyond',
+     'please',
+     'another',
+     'who',
+     'ourselves',
+     '‘d',
+     'mine',
+     'part',
+     'him',
+     'somewhere',
+     'per',
+     'move',
+     'therefore',
+     'our',
+     '‘m',
+     'whom',
+     "'ve",
+     'over',
+     'else',
+     'indeed',
+     'regarding',
+     'namely',
+     'from',
+     'whose',
+     'an',
+     'whence',
+     'ever',
+     'why',
+     'if',
+     'under',
+     'will',
+     'much',
+     'latterly',
+     'down',
+     '’re',
      'it',
-     'or']
+     'whereupon',
+     'other',
+     'five',
+     'show',
+     'are',
+     'there',
+     'also',
+     'which',
+     'and',
+     'many',
+     'them',
+     'or',
+     'well',
+     'most',
+     'about',
+     'was',
+     'former',
+     'should',
+     'always',
+     'thru',
+     'both',
+     'might',
+     'but',
+     'someone',
+     'unless',
+     'whether',
+     'up',
+     'hers',
+     'eight',
+     'had',
+     'you',
+     'onto',
+     'hereby',
+     'besides',
+     'some',
+     'again',
+     'does',
+     'various',
+     'nor',
+     'none',
+     'back',
+     'using',
+     'quite',
+     'ten',
+     'has',
+     "'s",
+     'above',
+     'here',
+     'everywhere',
+     'bottom',
+     'cannot',
+     'yourselves',
+     'been',
+     'own',
+     'seem',
+     'too',
+     'formerly',
+     'must',
+     'through',
+     'used',
+     'often',
+     'least',
+     'now',
+     'since',
+     'so',
+     'anything',
+     'seems',
+     'yours',
+     'itself',
+     'six',
+     'twenty',
+     '’m',
+     'around',
+     'however',
+     'full',
+     'he',
+     'do',
+     'third',
+     'toward',
+     'thence',
+     'to',
+     'amount',
+     'enough',
+     'all',
+     'hereupon',
+     'i',
+     'herein',
+     'those',
+     'three',
+     'n‘t',
+     'either',
+     'alone',
+     'us',
+     'less',
+     'between',
+     'behind',
+     'ca',
+     'nowhere',
+     'every',
+     'others',
+     'these',
+     'could',
+     'seeming',
+     'doing',
+     'due',
+     'no',
+     'therein',
+     'side',
+     'only',
+     'though',
+     'nevertheless',
+     'really',
+     'each',
+     'thus',
+     'hereafter',
+     'the',
+     'whole',
+     'although',
+     'whereby',
+     'became',
+     'beside',
+     'via',
+     'am',
+     'further',
+     'when',
+     '’ve',
+     'may',
+     'across',
+     'seemed',
+     'front',
+     "'ll",
+     'for',
+     'can',
+     'me',
+     'almost',
+     'were',
+     'give',
+     'together',
+     'rather',
+     'would',
+     'perhaps',
+     'several',
+     "'m",
+     'neither',
+     'made',
+     'whereafter',
+     'fifty',
+     'two',
+     'than',
+     'put',
+     'as',
+     'being',
+     'wherever',
+     'such',
+     'everything',
+     'n’t',
+     'herself',
+     'elsewhere',
+     'yourself',
+     'meanwhile',
+     'by',
+     'off',
+     "n't",
+     'even',
+     'during',
+     'before',
+     'how',
+     'their',
+     'amongst',
+     'whenever',
+     'once',
+     'make',
+     'nobody',
+     'because',
+     'beforehand',
+     'himself',
+     'anywhere',
+     'latter',
+     'never',
+     'your',
+     'say',
+     'go',
+     'anyhow',
+     'among',
+     'with',
+     'until',
+     'otherwise',
+     'take',
+     'that',
+     "'re",
+     'while',
+     '’s',
+     'become',
+     'where',
+     'did',
+     'everyone',
+     'sixty',
+     'keep',
+     'name',
+     'any',
+     'whoever',
+     'done',
+     'along',
+     'anyway',
+     'moreover',
+     'into',
+     'whereas',
+     'be',
+     '‘ll',
+     'noone',
+     'few',
+     'on',
+     'see',
+     'call',
+     'top',
+     'ours',
+     'one',
+     'empty',
+     'what',
+     'anyone',
+     'she',
+     'against',
+     'twelve',
+     'already',
+     'eleven',
+     '’ll',
+     'below',
+     'next',
+     'afterwards',
+     'my',
+     'except',
+     'thereafter',
+     'after',
+     'this',
+     "'d",
+     'first',
+     '‘re',
+     'more',
+     'something',
+     'becoming',
+     'throughout',
+     'very',
+     'within',
+     'upon',
+     'nothing',
+     'a',
+     'themselves',
+     'myself',
+     'without',
+     'they',
+     'have']
 
 
 
@@ -920,11 +1207,12 @@ stopword_list[-10:]
 
 
 
-### Remove stopwords and additional punctuation from the data
+### Remove Stopwords and Additional Punctuation from the Data
 
 
 ```python
-stopped_tokenz = [word.lower() for word in tokenz if word.lower() not in stopword_list]
+stopped_tokenz = [word.lower() for word in tokenz if word.lower() 
+                  not in stopword_list]
 ```
 
 
@@ -989,13 +1277,15 @@ freq.most_common(50)
 
 
 
-### Lemmatize the Data and use Regex to find and remove URL's, Tags, other misc
+### Lemmatize the Data, Utilize Regex to Find and Remove URL's, Tags, other Misc
 
 
 ```python
-additional_misc = ['sxsw','mention',r'[a-zA-Z]+\'?s]',r"(http[s]?://\w*\.\w*/+\w+)"
-                   ,r'\#\w*',r'RT [@]?\w*:',r'\@\w*',r"\d$",r"^\d"
-                   ,r"([a-zA-Z]+(?:'[a-z]+)?)",r'\d.',r'\d','RT',r'^http[s]?','za'] #[A-Z]{2,20} remove caps like MAGA and CDT
+additional_misc = ['sxsw','mention',r'[a-zA-Z]+\'?s]',
+                   r"(http[s]?://\w*\.\w*/+\w+)", r'\#\w*', 
+                   r'RT [@]?\w*:', r'\@\w*',r"\d$",r"^\d",
+                   r"([a-zA-Z]+(?:'[a-z]+)?)",r'\d.',r'\d','RT',
+                   r'^http[s]?','za'] #[A-Z]{2,20} remove caps like MAGA and CDT
 stopword_list.extend(additional_misc)
 stopword_list.extend(['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'])
 ```
@@ -1007,8 +1297,10 @@ lemmatizer = WordNetLemmatizer()
 
 
 ```python
-clean_stopped_tokenz = [word.lower() for word in stopped_tokenz if word not in stopword_list]
-clean_lemmatized_tokenz = [lemmatizer.lemmatize(word.lower()) for word in stopped_tokenz if word not in stopword_list]
+clean_stopped_tokenz = [word.lower() for word in stopped_tokenz if word 
+                        not in stopword_list]
+clean_lemmatized_tokenz = [lemmatizer.lemmatize(word.lower()) for word 
+                           in stopped_tokenz if word not in stopword_list]
 ```
 
 
@@ -1030,7 +1322,7 @@ lemma_word_count = sum(freq_clean_lemma.values()) # just a number
 
 
 ```python
-for word in freq_lemma2:
+for word in freq_lemma2: # separate both classes, positive and negative
     normalized_freq = word[1] / lemma_word_count
     print(word, "----", "{:.3f}".format(normalized_freq*100),"%")
 ```
@@ -1230,7 +1522,8 @@ fig, ax = plt.subplots(figsize=fig_dims)
 sns.set(font_scale=2)
 sns.set_style("darkgrid")
 palette = sns.set_palette("dark")
-ax = sns.barplot(x=word_pairs.head(15)['Word'], y=word_pairs.head(15)['Freq'], palette=palette)
+ax = sns.barplot(x=word_pairs.head(15)['Word'], y=word_pairs.head(15)['Freq'],
+                 palette=palette)
 ax.set(xlabel="Word Pairs",ylabel="Frequency")
 plt.ticklabel_format(style='plain',axis='y')
 plt.xticks(rotation=70)
@@ -1240,7 +1533,7 @@ plt.show()
 
 
     
-![png](Tweet_Analysis_files/Tweet_Analysis_44_0.png)
+![png](Tweet_Analysis_files/Tweet_Analysis_59_0.png)
     
 
 
@@ -1393,7 +1686,8 @@ fig, ax = plt.subplots(figsize=fig_dims)
 sns.set(font_scale=2)
 sns.set_style("darkgrid")
 palette = sns.set_palette("dark")
-ax = sns.barplot(x=PMI_list.head(15)['Words'], y=PMI_list.head(15)['PMI'], palette=palette)
+ax = sns.barplot(x=PMI_list.head(15)['Words'], y=PMI_list.head(15)['PMI'], 
+                 palette=palette)
 ax.set(xlabel="PMI Pairs",ylabel="Frequency")
 plt.ylim([13,14.5])
 plt.ticklabel_format(style='plain',axis='y')
@@ -1404,7 +1698,7 @@ plt.show()
 
 
     
-![png](Tweet_Analysis_files/Tweet_Analysis_47_0.png)
+![png](Tweet_Analysis_files/Tweet_Analysis_62_0.png)
     
 
 
@@ -1504,7 +1798,8 @@ df.head()
 
 ```python
 df1 = df1.drop(columns=['Uncertain','No Emotion'])
-# Turn negative and positive columns into one column of just negatives and positive.
+# Turn negative and positive columns into one column of just negatives 
+# and positive.
 df1 = df1[df1['Emotion'] != "No emotion toward brand or product"]
 df1 = df1[df1['Emotion'] != "I can't tell"]
 df1 = df1.drop(columns='Negative')
@@ -1586,13 +1881,7 @@ df1.head()
 df1.to_csv('Tweet.csv')
 ```
 
-### Create upsampled data, train and test sets
-
-
-
-```python
-from sklearn.utils import resample
-```
+### Create Upsampled Data
 
 
 ```python
@@ -1626,12 +1915,14 @@ df_majority.shape
 
 
 ```python
-df_min_sample = resample(df_minority, replace=True, n_samples=1000, random_state=42)
+df_min_sample = resample(df_minority, replace=True, n_samples=1000, 
+                         random_state=42)
 ```
 
 
 ```python
-df_maj_sample = resample(df_majority, replace=True, n_samples=2500, random_state=42)
+df_maj_sample = resample(df_majority, replace=True, n_samples=2500, 
+                         random_state=42)
 ```
 
 
@@ -1657,17 +1948,14 @@ X, y = df_upsampled['Tweet'], df_upsampled['Positive_Bin']
 df_upsampled.to_csv('Upsampled.csv')
 ```
 
+## Modeling
+
 ### Train/Test Split
 
 
 ```python
 from sklearn.model_selection import train_test_split
 X_train, X_test, y_train, y_test = train_test_split(X, y, random_state=42)
-```
-
-
-```python
-scaler_object = MaxAbsScaler()
 ```
 
 
@@ -1694,7 +1982,7 @@ y_train.value_counts(0)
 y_test.value_counts(1)
 ```
 
-    2020-12-17 14:41:18,922 : INFO : NumExpr defaulting to 8 threads.
+    2020-12-23 10:29:17,902 : INFO : NumExpr defaulting to 8 threads.
     
 
 
@@ -1721,14 +2009,6 @@ vectorizer = CountVectorizer(tokenizer=tokenizer.tokenize,
 
 
 ```python
-# for row in X_train:
-#     for word in row:
-#         lemmatizer.lemmatize(X_train[row][word])
-# return X_train[word][row]
-```
-
-
-```python
 X_train_count = vectorizer.fit_transform(X_train)
 X_test_count = vectorizer.transform(X_test)
 ```
@@ -1736,6 +2016,41 @@ X_test_count = vectorizer.transform(X_test)
     C:\Users\josep\anaconda3\lib\site-packages\sklearn\feature_extraction\text.py:383: UserWarning: Your stop_words may be inconsistent with your preprocessing. Tokenizing the stop words generated tokens [":'[", ':/', 'a-z', 'a-za-z', 'http', 'n', 'w', '‘'] not in stop_words.
       warnings.warn('Your stop_words may be inconsistent with '
     
+
+### MaxAbsScaler
+
+
+```python
+scaler_object = MaxAbsScaler().fit(X_train_count)
+```
+
+
+```python
+scaler_object.transform(X_train_count)
+```
+
+
+
+
+    <2625x4295 sparse matrix of type '<class 'numpy.float64'>'
+    	with 28229 stored elements in Compressed Sparse Row format>
+
+
+
+
+```python
+scaler_object.transform(X_test_count)
+```
+
+
+
+
+    <875x4295 sparse matrix of type '<class 'numpy.float64'>'
+    	with 8854 stored elements in Compressed Sparse Row format>
+
+
+
+### Instantiate Model
 
 
 ```python
@@ -1748,17 +2063,21 @@ model = ran_for.fit(X_train_count, y_train)
 y_hat_test = model.predict(X_test_count)
 ```
 
-### Evaluate Models
+## Evaluate Models
+#### 1 denotes a Positive Tweet, 0 denotes a Negative Tweet
+
+### Random Forest with Count Vectorizer
 
 
 ```python
-evaluate_model(y_test, y_hat_test, X_test_count,clf=model) # 1 denotes Positive Tweet
+evaluate_model(y_test, y_hat_test, X_test_count,clf=model) 
+# 1 denotes Positive Tweet
 ```
 
                   precision    recall  f1-score   support
     
-               0       0.96      0.84      0.90       277
-               1       0.93      0.98      0.96       598
+               0       0.97      0.84      0.90       277
+               1       0.93      0.99      0.96       598
     
         accuracy                           0.94       875
        macro avg       0.95      0.91      0.93       875
@@ -1768,14 +2087,17 @@ evaluate_model(y_test, y_hat_test, X_test_count,clf=model) # 1 denotes Positive 
 
 
     
-![png](Tweet_Analysis_files/Tweet_Analysis_73_1.png)
+![png](Tweet_Analysis_files/Tweet_Analysis_92_1.png)
     
 
+
+#### Basic Random Forest model performs well after preprocessing with high precision and f1-scores. 
 
 
 ```python
 tf_idf_vectorizer = TfidfVectorizer(tokenizer=tokenizer.tokenize,
-                                    stop_words=stopword_list,decode_error='ignore')
+                                    stop_words=stopword_list,
+                                    decode_error='ignore')
 ```
 
 
@@ -1810,27 +2132,31 @@ model_tf_idf = ran_for.fit(X_train_tf_idf,y_train)
 y_hat_tf_idf = model_tf_idf.predict(X_test_count)
 ```
 
+### Random Forest with Tf-Idf Vectorizer
+
 
 ```python
-evaluate_model(y_test, y_hat_tf_idf, X_test_tf_idf,clf=model_tf_idf) # slightly better performance
+evaluate_model(y_test, y_hat_tf_idf, X_test_tf_idf,clf=model_tf_idf) 
 ```
 
                   precision    recall  f1-score   support
     
-               0       0.95      0.57      0.71       277
-               1       0.83      0.98      0.90       598
+               0       0.91      0.64      0.75       277
+               1       0.85      0.97      0.91       598
     
-        accuracy                           0.85       875
-       macro avg       0.89      0.78      0.81       875
-    weighted avg       0.87      0.85      0.84       875
+        accuracy                           0.87       875
+       macro avg       0.88      0.81      0.83       875
+    weighted avg       0.87      0.87      0.86       875
     
+    
+
+
+    
+![png](Tweet_Analysis_files/Tweet_Analysis_100_1.png)
     
 
 
-    
-![png](Tweet_Analysis_files/Tweet_Analysis_79_1.png)
-    
-
+### Multiple Models, CountVectorizer
 
 
 ```python
@@ -1841,90 +2167,92 @@ gb_clf = GradientBoostingClassifier()
 models = [ran_for, ada_clf, gb_clf]
 
 for model in models:
-    single_model_opt(ran_for, X_train_count, y_train, X_test_count, y_test)
+    single_model_opt(model, X_train_count, y_train, X_test_count, y_test)
 ```
 
-    Accuracy Score:  0.9302857142857143
-    Precision Score:  0.9162790697674419
+    Accuracy Score:  0.9314285714285714
+    Precision Score:  0.9177018633540373
     Recall Score:  0.9882943143812709
-    F1 Score:  0.9509251810136766
-    RandomForestClassifier()   0.9302857142857143
+    F1 Score:  0.9516908212560387
+    RandomForestClassifier()   0.9314285714285714
     
 
 
     
-![png](Tweet_Analysis_files/Tweet_Analysis_80_1.png)
+![png](Tweet_Analysis_files/Tweet_Analysis_102_1.png)
     
 
 
-    Accuracy Score:  0.9291428571428572
-    Precision Score:  0.9161490683229814
-    Recall Score:  0.9866220735785953
-    F1 Score:  0.9500805152979066
-    RandomForestClassifier()   0.9291428571428572
-    
-
-
-    
-![png](Tweet_Analysis_files/Tweet_Analysis_80_3.png)
-    
-
-
-    Accuracy Score:  0.9371428571428572
-    Precision Score:  0.9235569422776911
-    Recall Score:  0.9899665551839465
-    F1 Score:  0.9556093623890234
-    RandomForestClassifier()   0.9371428571428572
+    Accuracy Score:  0.7691428571428571
+    Precision Score:  0.7661290322580645
+    Recall Score:  0.9531772575250836
+    F1 Score:  0.849478390461997
+    AdaBoostClassifier()   0.7691428571428571
     
 
 
     
-![png](Tweet_Analysis_files/Tweet_Analysis_80_5.png)
+![png](Tweet_Analysis_files/Tweet_Analysis_102_3.png)
     
 
+
+    Accuracy Score:  0.7794285714285715
+    Precision Score:  0.7592829705505761
+    Recall Score:  0.9916387959866221
+    F1 Score:  0.8600435097897027
+    GradientBoostingClassifier()   0.7794285714285715
+    
+
+
+    
+![png](Tweet_Analysis_files/Tweet_Analysis_102_5.png)
+    
+
+
+### Multiple Models, Tf-Idf Vectorizer
 
 
 ```python
 for model in models:
-    single_model_opt(ran_for, X_train_tf_idf, y_train, X_test_tf_idf, y_test)
+    single_model_opt(model, X_train_tf_idf, y_train, X_test_tf_idf, y_test)
 ```
 
-    Accuracy Score:  0.9302857142857143
-    Precision Score:  0.9149922720247295
+    Accuracy Score:  0.9337142857142857
+    Precision Score:  0.9192546583850931
     Recall Score:  0.9899665551839465
-    F1 Score:  0.9510040160642571
-    RandomForestClassifier()   0.9302857142857143
+    F1 Score:  0.9533011272141707
+    RandomForestClassifier()   0.9337142857142857
     
 
 
     
-![png](Tweet_Analysis_files/Tweet_Analysis_81_1.png)
+![png](Tweet_Analysis_files/Tweet_Analysis_104_1.png)
     
 
 
-    Accuracy Score:  0.9302857142857143
-    Precision Score:  0.9175738724727839
-    Recall Score:  0.9866220735785953
-    F1 Score:  0.9508460918614021
-    RandomForestClassifier()   0.9302857142857143
-    
-
-
-    
-![png](Tweet_Analysis_files/Tweet_Analysis_81_3.png)
-    
-
-
-    Accuracy Score:  0.9371428571428572
-    Precision Score:  0.9222395023328149
-    Recall Score:  0.9916387959866221
-    F1 Score:  0.9556809024979854
-    RandomForestClassifier()   0.9371428571428572
+    Accuracy Score:  0.7782857142857142
+    Precision Score:  0.7797783933518005
+    Recall Score:  0.9414715719063546
+    F1 Score:  0.8530303030303031
+    AdaBoostClassifier()   0.7782857142857142
     
 
 
     
-![png](Tweet_Analysis_files/Tweet_Analysis_81_5.png)
+![png](Tweet_Analysis_files/Tweet_Analysis_104_3.png)
+    
+
+
+    Accuracy Score:  0.7817142857142857
+    Precision Score:  0.7639429312581063
+    Recall Score:  0.9849498327759197
+    F1 Score:  0.8604821037253471
+    GradientBoostingClassifier()   0.7817142857142857
+    
+
+
+    
+![png](Tweet_Analysis_files/Tweet_Analysis_104_5.png)
     
 
 
@@ -2942,7 +3270,8 @@ tf_idf_vectorizer.get_feature_names()
 
 
 ```python
-importance = pd.Series(ran_for.feature_importances_,index=tf_idf_vectorizer.get_feature_names())
+importance = pd.Series(ran_for.feature_importances_,
+                       index=tf_idf_vectorizer.get_feature_names())
 importance = pd.DataFrame(importance).sort_values(by=0,ascending=False)
 ```
 
@@ -2953,7 +3282,8 @@ fig, ax = plt.subplots(figsize=fig_dims)
 sns.set(font_scale=2)
 sns.set_style("darkgrid")
 palette = sns.set_palette("dark")
-ax = sns.barplot(x=importance.head(15).index, y=importance.head(15)[0], palette=palette)
+ax = sns.barplot(x=importance.head(15).index, y=importance.head(15)[0], 
+                 palette=palette)
 ax.set(xlabel="Word",ylabel="Importance")
 plt.ticklabel_format(style='plain',axis='y')
 plt.xticks(rotation=70)
@@ -2963,9 +3293,11 @@ plt.show()
 
 
     
-![png](Tweet_Analysis_files/Tweet_Analysis_84_0.png)
+![png](Tweet_Analysis_files/Tweet_Analysis_107_0.png)
     
 
+
+### Pipeline and GridSearchCV
 
 
 ```python
@@ -3096,332 +3428,332 @@ grid.best_params_
 
 
     {'clf__criterion': 'gini',
-     'text_pipe__count_vectorizer__stop_words': ['mine',
-      'seemed',
-      'n’t',
-      'via',
-      'up',
-      'own',
-      'when',
-      'hers',
-      'but',
-      'elsewhere',
-      'yet',
-      '’ve',
-      'these',
-      'serious',
-      'fifty',
-      'became',
-      'without',
-      'be',
-      'every',
-      'toward',
-      'anyway',
-      'with',
-      'each',
-      'upon',
-      'besides',
-      'since',
-      'him',
-      'make',
-      "'ve",
-      'all',
-      'regarding',
-      'she',
-      'among',
-      'while',
-      'n‘t',
-      'bottom',
-      'in',
-      'together',
-      'last',
-      'amount',
-      'none',
-      'empty',
-      'may',
-      'between',
-      'front',
-      'anything',
-      'well',
-      'indeed',
-      'why',
-      'yourself',
-      '’re',
-      'no',
-      'they',
-      'back',
-      'almost',
-      'any',
-      'put',
-      'whom',
-      'we',
-      'both',
-      'others',
-      'ours',
-      'being',
-      'of',
-      'who',
-      'twenty',
-      'thereafter',
-      'please',
-      'thereby',
-      'see',
-      'whereby',
-      '‘ve',
-      'thru',
-      'two',
-      'not',
-      '’d',
-      'within',
-      'unless',
-      'where',
-      'however',
-      'various',
-      'six',
-      'something',
-      'nine',
-      'move',
-      'becoming',
-      'his',
-      'ourselves',
-      'whole',
-      'hence',
-      'i',
-      'on',
-      'its',
-      'thus',
-      'someone',
-      'therefore',
-      '‘re',
-      'otherwise',
-      'same',
-      'here',
-      'seem',
-      'themselves',
-      'our',
-      'how',
-      'meanwhile',
-      'yourselves',
-      '’s',
-      'very',
-      'out',
-      'many',
-      'my',
-      'those',
-      'were',
-      'used',
-      'myself',
-      "'ll",
-      'third',
-      'beyond',
-      "'re",
-      '‘ll',
-      'next',
-      'go',
-      'through',
-      'except',
-      'other',
-      'and',
-      'amongst',
-      'few',
-      'are',
-      'one',
-      'show',
-      'thereupon',
-      'would',
-      'though',
-      "'m",
-      'itself',
-      'a',
-      'can',
-      'anywhere',
-      'down',
-      'whereupon',
-      'say',
-      '‘d',
-      'neither',
-      'becomes',
-      'your',
-      'been',
-      '‘m',
-      'although',
-      'everywhere',
-      'there',
-      'then',
-      'per',
-      'throughout',
-      'wherein',
-      'their',
-      'that',
-      'to',
-      'everything',
-      'somewhere',
-      'after',
-      'keep',
-      'you',
-      'should',
-      'at',
-      'still',
-      'formerly',
-      'himself',
-      'which',
-      'whenever',
-      'across',
-      'least',
-      'whereafter',
-      'often',
-      'sometimes',
-      'fifteen',
-      'whither',
-      'anyone',
-      'thence',
-      'whence',
-      'moreover',
+     'text_pipe__count_vectorizer__stop_words': ['she',
       'enough',
-      'noone',
-      'along',
-      'eleven',
-      'into',
-      'from',
-      'whether',
-      'so',
-      'now',
-      "'s",
-      'is',
-      'former',
-      'does',
-      'wherever',
-      'he',
-      'give',
-      'us',
-      'beside',
-      'herself',
-      'sometime',
-      'cannot',
-      'beforehand',
-      'also',
-      'nevertheless',
-      'might',
-      'towards',
-      'most',
-      'done',
-      'over',
-      '’ll',
-      'hereby',
-      'under',
-      'am',
-      'if',
-      'onto',
-      "n't",
-      'first',
-      'during',
-      'forty',
-      'doing',
-      'call',
-      'name',
-      'rather',
-      '‘s',
-      'less',
-      'nobody',
-      'do',
-      'nor',
-      'could',
-      'latterly',
-      '’m',
-      'more',
-      'afterwards',
-      'really',
-      'even',
-      'never',
-      'ten',
-      'latter',
-      'off',
-      'an',
-      'ever',
-      'mostly',
-      'what',
-      'hundred',
-      'further',
-      'due',
-      'behind',
-      'alone',
-      'the',
-      'take',
-      'too',
-      'her',
-      'using',
-      'namely',
-      'as',
-      'several',
-      'had',
-      'was',
-      'did',
-      'get',
-      'else',
-      'than',
-      'yours',
-      'before',
-      're',
-      'whereas',
-      'because',
-      'perhaps',
-      'side',
-      'nothing',
-      'therein',
-      'sixty',
-      'somehow',
-      "'d",
-      'whoever',
-      'once',
-      'them',
-      'either',
-      'whatever',
-      'whose',
-      'until',
-      'three',
       'about',
-      'must',
-      'anyhow',
-      'such',
-      'already',
-      'above',
-      'everyone',
-      'eight',
-      'has',
-      'top',
-      'five',
-      'for',
-      'always',
-      'have',
-      'herein',
-      'will',
-      'ca',
-      'seems',
+      'than',
       'four',
-      'another',
-      'only',
-      'this',
-      'below',
-      'become',
-      'me',
-      'again',
-      'quite',
-      'around',
-      'part',
-      'by',
-      'hereafter',
-      'twelve',
-      'nowhere',
-      'seeming',
-      'hereupon',
-      'against',
-      'full',
-      'much',
-      'just',
-      'made',
+      'down',
+      'without',
+      'them',
+      'thence',
+      'see',
       'some',
+      'amount',
+      'whatever',
+      'meanwhile',
+      'serious',
+      'whereas',
+      'such',
+      'have',
+      'although',
+      'then',
+      '’m',
+      'through',
+      'via',
+      'thereby',
+      'elsewhere',
+      'along',
+      'above',
+      'thereafter',
+      'on',
+      'both',
+      'everything',
+      'get',
+      'much',
+      'least',
+      "'re",
+      'his',
+      'each',
+      'everyone',
+      'last',
+      'perhaps',
+      'really',
+      'latter',
+      'neither',
+      'being',
+      'yet',
+      'anyway',
+      'forty',
+      'whether',
+      'noone',
+      'keep',
+      're',
+      'almost',
+      'five',
+      'may',
+      'were',
+      'take',
+      'whoever',
+      'unless',
+      'besides',
+      'beside',
+      '’re',
+      'against',
+      'here',
+      'behind',
+      'somewhere',
+      'this',
+      'n‘t',
+      'formerly',
+      'between',
+      'used',
+      'had',
+      'even',
+      'rather',
+      'all',
+      'twenty',
+      'below',
+      'due',
+      'except',
+      'and',
+      'empty',
+      'up',
+      'ourselves',
+      '’s',
+      'none',
+      'say',
+      'already',
+      'made',
+      'within',
+      'the',
+      'others',
+      'becomes',
+      'mine',
+      'alone',
+      '’ll',
+      'nothing',
+      'in',
+      'own',
+      'something',
+      'becoming',
+      'can',
+      'though',
+      'side',
+      'everywhere',
+      'somehow',
+      'nobody',
+      'very',
+      'nor',
+      'any',
+      'will',
+      'more',
+      'must',
+      'he',
+      'themselves',
+      '‘ve',
+      'ten',
+      'twelve',
+      'over',
+      'always',
+      'hereafter',
+      'with',
+      'no',
+      'wherein',
+      'thru',
+      'mostly',
+      'herein',
+      'latterly',
+      'do',
+      'well',
+      '‘m',
+      'name',
+      'but',
+      'make',
+      'yourself',
+      'by',
+      'doing',
+      'go',
+      'afterwards',
+      "'d",
+      'same',
+      'eleven',
+      'its',
+      'so',
+      'eight',
+      'an',
+      'there',
+      'into',
+      'few',
+      'is',
+      'just',
+      'hereby',
+      'thereupon',
+      'done',
       'it',
+      'who',
+      'across',
+      'seemed',
+      'how',
+      'your',
+      'whom',
+      'ever',
+      'upon',
+      'during',
+      'also',
+      'using',
+      'seeming',
+      'be',
+      'other',
+      'various',
+      'her',
+      'wherever',
+      'because',
+      'therein',
+      'myself',
+      'seem',
+      'put',
+      'most',
+      'sometime',
+      'three',
+      'after',
+      'show',
+      'nowhere',
+      'give',
+      'please',
+      'never',
+      '‘ll',
+      'fifty',
+      'did',
+      'still',
+      'those',
+      'from',
+      'one',
+      'before',
+      'does',
+      'full',
+      'several',
+      'us',
+      'whole',
+      'former',
+      'should',
+      'namely',
+      'too',
+      'back',
+      'until',
+      'whereby',
+      'whence',
+      'quite',
+      'which',
+      'became',
+      'whereafter',
+      'you',
+      'throughout',
+      'sixty',
+      'every',
+      'ca',
+      'would',
+      'therefore',
+      'him',
+      'less',
+      'my',
+      'whither',
+      'anything',
+      'sometimes',
+      'again',
+      'are',
+      'per',
+      'what',
+      'their',
+      'n’t',
+      'anyhow',
+      'nevertheless',
+      'call',
+      'many',
+      'could',
+      'another',
+      "n't",
+      'anywhere',
+      'top',
+      'often',
+      'i',
+      "'m",
+      'beforehand',
+      'only',
+      'might',
+      'beyond',
+      'fifteen',
+      'our',
+      'bottom',
+      'that',
+      'however',
+      'now',
+      'been',
+      'regarding',
+      "'s",
       'or',
+      '’d',
+      'out',
+      'as',
+      'first',
+      'together',
+      'we',
+      'whose',
+      'move',
+      'not',
+      'front',
+      'thus',
+      'indeed',
+      'off',
+      'towards',
+      'toward',
+      "'ll",
+      'where',
+      'around',
+      'am',
+      'part',
+      '‘re',
+      'six',
+      'become',
+      'hence',
+      'ours',
+      'under',
+      'a',
+      'yours',
+      'himself',
+      'otherwise',
+      'moreover',
+      'among',
+      'whereupon',
+      'whenever',
+      'if',
+      'two',
+      'once',
+      'seems',
+      'while',
+      'onto',
+      'for',
+      'was',
+      '‘s',
+      'they',
+      'of',
+      'at',
+      'itself',
+      '’ve',
+      'hers',
+      'cannot',
+      'nine',
+      'why',
+      'to',
+      "'ve",
+      'these',
+      'third',
+      'amongst',
+      'hereupon',
+      'further',
+      'has',
+      'yourselves',
+      'next',
+      'else',
+      'someone',
+      'anyone',
+      'either',
+      'when',
+      'herself',
+      '‘d',
+      'hundred',
+      'me',
+      'since',
       '!',
       '"',
       '#',
@@ -3685,8 +4017,8 @@ evaluate_model(y_test,y_hat_test,X_test,best_pipe)
 
                   precision    recall  f1-score   support
     
-               0       0.96      0.85      0.90       277
-               1       0.93      0.98      0.96       598
+               0       0.96      0.86      0.91       277
+               1       0.94      0.98      0.96       598
     
         accuracy                           0.94       875
        macro avg       0.95      0.92      0.93       875
@@ -3696,7 +4028,7 @@ evaluate_model(y_test,y_hat_test,X_test,best_pipe)
 
 
     
-![png](Tweet_Analysis_files/Tweet_Analysis_95_1.png)
+![png](Tweet_Analysis_files/Tweet_Analysis_119_1.png)
     
 
 
@@ -3711,6 +4043,8 @@ X_train_pipe.shape
     (2625, 4256)
 
 
+
+### Bigram Frequency
 
 
 ```python
@@ -3735,7 +4069,7 @@ tweets_scored = tweet_finder.score_ngrams(bigram_measures.raw_freq)
 
 ```python
 bigram1 = pd.DataFrame(tweets_scored, columns=['Words','Freq'])
-bigram1
+bigram1.head()
 ```
 
 
@@ -3789,39 +4123,8 @@ bigram1
       <td>(link, google)</td>
       <td>0.003877</td>
     </tr>
-    <tr>
-      <th>...</th>
-      <td>...</td>
-      <td>...</td>
-    </tr>
-    <tr>
-      <th>42702</th>
-      <td>(åç, complete)</td>
-      <td>0.000012</td>
-    </tr>
-    <tr>
-      <th>42703</th>
-      <td>(åçwhat, tech)</td>
-      <td>0.000012</td>
-    </tr>
-    <tr>
-      <th>42704</th>
-      <td>(åè, android)</td>
-      <td>0.000012</td>
-    </tr>
-    <tr>
-      <th>42705</th>
-      <td>(åè, ubersoc)</td>
-      <td>0.000012</td>
-    </tr>
-    <tr>
-      <th>42706</th>
-      <td>(ìù±g, wish)</td>
-      <td>0.000012</td>
-    </tr>
   </tbody>
 </table>
-<p>42707 rows × 2 columns</p>
 </div>
 
 
@@ -3833,7 +4136,8 @@ fig, ax = plt.subplots(figsize=fig_dims)
 sns.set(font_scale=2)
 sns.set_style("darkgrid")
 palette = sns.set_palette("dark")
-ax = sns.barplot(x=bigram1.head(15)['Words'], y=bigram1.head(15)['Freq'], palette=palette)
+ax = sns.barplot(x=bigram1.head(15)['Words'], y=bigram1.head(15)['Freq'], 
+                 palette=palette)
 ax.set(xlabel="Word Pairs",ylabel="Frequency")
 plt.ticklabel_format(style='plain',axis='y')
 plt.xticks(rotation=70)
@@ -3843,11 +4147,11 @@ plt.show()
 
 
     
-![png](Tweet_Analysis_files/Tweet_Analysis_100_0.png)
+![png](Tweet_Analysis_files/Tweet_Analysis_125_0.png)
     
 
 
-## Deep NLP using Keras NN (binary)
+## Keras NN Binary Classification
 
 
 ```python
@@ -3860,6 +4164,8 @@ from tensorflow.keras import models, layers, optimizers
 ```python
 model = 0
 ```
+
+### Tokenize Upsampled Tweets
 
 
 ```python
@@ -3877,24 +4183,11 @@ print('sequences type: ' , type(sequences))
 ```python
 one_hot_results = tokenizer.texts_to_matrix(tweets, mode='binary')
 print('one_hot_results type:', type(one_hot_results))
-one_hot_results
+one_hot_results = np.asarray(one_hot_results)
 ```
 
     one_hot_results type: <class 'numpy.ndarray'>
     
-
-
-
-
-    array([[0., 1., 0., ..., 0., 0., 0.],
-           [0., 1., 1., ..., 0., 0., 0.],
-           [0., 1., 1., ..., 0., 0., 0.],
-           ...,
-           [0., 1., 0., ..., 0., 0., 0.],
-           [0., 1., 0., ..., 0., 0., 0.],
-           [0., 1., 0., ..., 0., 0., 0.]])
-
-
 
 
 ```python
@@ -3915,12 +4208,30 @@ print('Dimensions of our coded results:', np.shape(one_hot_results))
 
 
 ```python
+y = df_upsampled['Positive_Bin']
+```
+
+
+```python
+y = np.asarray(y)
+```
+
+
+```python
 print(y.shape)
 print(one_hot_results.shape)
 ```
 
-    (3500, 1)
+    (3500,)
     (3500, 10000)
+    
+
+
+```python
+print(len(y))
+```
+
+    3500
     
 
 
@@ -3931,10 +4242,10 @@ import random
 
 ```python
 random.seed(42)
-test_index = random.sample(range(1,3500), 1500)
+test_index = list(random.sample(range(1,3200),2000))
 
-test = one_hot_results[test_index]
-train = np.delete(one_hot_results, test_index, 0) #.astype('float32').reshape((-1,1))
+test = np.asarray(one_hot_results[test_index])
+train = np.delete(one_hot_results, test_index, 0) 
 
 label_test = y[test_index]
 label_train = np.delete(y, test_index, 0)
@@ -3945,19 +4256,11 @@ print('Test shape:', np.shape(test))
 print('Train shape:', np.shape(train))
 ```
 
-    Test label shape: (1500, 1)
-    Train label shape: (2000, 1)
-    Test shape: (1500, 10000)
-    Train shape: (2000, 10000)
+    Test label shape: (2000,)
+    Train label shape: (1500,)
+    Test shape: (2000, 10000)
+    Train shape: (1500, 10000)
     
-
-
-```python
-# tokenizer = Tokenizer()
-# tokenizer.fit_on_texts(list(X))
-# sequences = tokenizer.texts_to_sequences(X)
-# X = sequence.pad_sequences(sequences,maxlen=100)
-```
 
 
 ```python
@@ -4973,53 +5276,25 @@ tokenizer.word_counts
 
 
 ```python
-vocab_size = len(tokenizer.word_counts)
-seq_len = X.shape[1]
-```
-
-
-```python
-print(vocab_size)
-print(seq_len)
-```
-
-    4816
-    100
-    
-
-
-```python
 print(type(X),X.shape)
 print(type(y),y.shape)
 ```
 
-    <class 'numpy.ndarray'> (3500, 100)
-    <class 'numpy.ndarray'> (3500, 1)
+    <class 'pandas.core.series.Series'> (3500,)
+    <class 'numpy.ndarray'> (3500,)
     
 
-
-```python
-X = np.asarray(X).astype('float32')
-```
-
-
-```python
-print(type(X),X.shape)
-print(type(y),y.shape)
-```
-
-    <class 'numpy.ndarray'> (3500, 100)
-    <class 'numpy.ndarray'> (3500, 1)
-    
+### Build Neural Network Model with Sigmoid Activation
 
 
 ```python
 # Initialize a sequential model
+model = []
 model = models.Sequential()
 # Two layers with relu activation
 model.add(layers.Dense(32, activation='relu', input_shape=(10000,)))
 model.add(layers.Dense(16, activation='relu'))
-model.add(layers.Dense(2, activation='sigmoid'))
+model.add(layers.Dense(1, activation='sigmoid'))
 model.compile(optimizer='adam',
               loss='binary_crossentropy',
               metrics=['acc'])
@@ -5030,18 +5305,18 @@ model.compile(optimizer='adam',
 model.summary()
 ```
 
-    Model: "sequential_12"
+    Model: "sequential"
     _________________________________________________________________
     Layer (type)                 Output Shape              Param #   
     =================================================================
-    dense_27 (Dense)             (None, 32)                320032    
+    dense (Dense)                (None, 32)                320032    
     _________________________________________________________________
-    dense_28 (Dense)             (None, 16)                528       
+    dense_1 (Dense)              (None, 16)                528       
     _________________________________________________________________
-    dense_29 (Dense)             (None, 2)                 34        
+    dense_2 (Dense)              (None, 1)                 17        
     =================================================================
-    Total params: 320,594
-    Trainable params: 320,594
+    Total params: 320,577
+    Trainable params: 320,577
     Non-trainable params: 0
     _________________________________________________________________
     
@@ -5054,7 +5329,7 @@ train.shape
 
 
 
-    (2000, 10000)
+    (1500, 10000)
 
 
 
@@ -5066,157 +5341,117 @@ label_train.shape
 
 
 
-    (2000, 1)
+    (1500,)
 
 
+
+### Run Model
 
 
 ```python
-history = model.fit(train,label_train, batch_size=32, epochs=10, verbose=2, validation_split=.2)
+history = model.fit(train, label_train, batch_size=32, epochs=20, verbose=2, 
+                    validation_split=.2)
 ```
 
-    Epoch 1/10
+    Epoch 1/20
+    38/38 - 1s - loss: 0.6205 - acc: 0.6908 - val_loss: 0.3322 - val_acc: 1.0000
+    Epoch 2/20
+    38/38 - 0s - loss: 0.4580 - acc: 0.7767 - val_loss: 0.2384 - val_acc: 0.9800
+    Epoch 3/20
+    38/38 - 0s - loss: 0.2799 - acc: 0.9208 - val_loss: 0.1912 - val_acc: 0.9633
+    Epoch 4/20
+    38/38 - 0s - loss: 0.1385 - acc: 0.9733 - val_loss: 0.1473 - val_acc: 0.9500
+    Epoch 5/20
+    38/38 - 0s - loss: 0.0633 - acc: 0.9933 - val_loss: 0.1253 - val_acc: 0.9567
+    Epoch 6/20
+    38/38 - 0s - loss: 0.0304 - acc: 0.9975 - val_loss: 0.1498 - val_acc: 0.9133
+    Epoch 7/20
+    38/38 - 0s - loss: 0.0166 - acc: 1.0000 - val_loss: 0.1411 - val_acc: 0.9200
+    Epoch 8/20
+    38/38 - 0s - loss: 0.0101 - acc: 1.0000 - val_loss: 0.1322 - val_acc: 0.9267
+    Epoch 9/20
+    38/38 - 0s - loss: 0.0070 - acc: 1.0000 - val_loss: 0.1541 - val_acc: 0.9133
+    Epoch 10/20
+    38/38 - 0s - loss: 0.0050 - acc: 1.0000 - val_loss: 0.1688 - val_acc: 0.9100
+    Epoch 11/20
+    38/38 - 0s - loss: 0.0038 - acc: 1.0000 - val_loss: 0.1384 - val_acc: 0.9267
+    Epoch 12/20
+    38/38 - 0s - loss: 0.0030 - acc: 1.0000 - val_loss: 0.1757 - val_acc: 0.9100
+    Epoch 13/20
+    38/38 - 0s - loss: 0.0024 - acc: 1.0000 - val_loss: 0.1566 - val_acc: 0.9200
+    Epoch 14/20
+    38/38 - 0s - loss: 0.0020 - acc: 1.0000 - val_loss: 0.1674 - val_acc: 0.9167
+    Epoch 15/20
+    38/38 - 0s - loss: 0.0016 - acc: 1.0000 - val_loss: 0.1673 - val_acc: 0.9167
+    Epoch 16/20
+    38/38 - 0s - loss: 0.0014 - acc: 1.0000 - val_loss: 0.1717 - val_acc: 0.9167
+    Epoch 17/20
+    38/38 - 0s - loss: 0.0012 - acc: 1.0000 - val_loss: 0.1737 - val_acc: 0.9167
+    Epoch 18/20
+    38/38 - 0s - loss: 0.0011 - acc: 1.0000 - val_loss: 0.1782 - val_acc: 0.9133
+    Epoch 19/20
+    38/38 - 0s - loss: 9.2470e-04 - acc: 1.0000 - val_loss: 0.1748 - val_acc: 0.9167
+    Epoch 20/20
+    38/38 - 0s - loss: 8.1632e-04 - acc: 1.0000 - val_loss: 0.1790 - val_acc: 0.9167
     
 
+### Training and Validation Graphs
 
-    ---------------------------------------------------------------------------
 
-    ValueError                                Traceback (most recent call last)
+```python
+history_dict = history.history
+loss_values = history_dict['loss']
+loss_valid = history_dict['val_loss']
 
-    <ipython-input-256-c75e5aa679b8> in <module>
-    ----> 1 history = model.fit(train,label_train, batch_size=32, epochs=10, verbose=2, validation_split=.2)
+epochs = range(1, len(loss_values) + 1)
+
+plt.plot(epochs, loss_values, 'g', label='Training Loss')
+plt.plot(epochs, loss_valid, 'r', label='Validation Loss')
+plt.title('Training Loss')
+plt.xlabel('Epochs')
+plt.ylabel('Loss')
+plt.legend()
+plt.show()
+```
+
+
     
-
-    ~\AppData\Roaming\Python\Python38\site-packages\tensorflow\python\keras\engine\training.py in fit(self, x, y, batch_size, epochs, verbose, callbacks, validation_split, validation_data, shuffle, class_weight, sample_weight, initial_epoch, steps_per_epoch, validation_steps, validation_batch_size, validation_freq, max_queue_size, workers, use_multiprocessing)
-       1098                 _r=1):
-       1099               callbacks.on_train_batch_begin(step)
-    -> 1100               tmp_logs = self.train_function(iterator)
-       1101               if data_handler.should_sync:
-       1102                 context.async_wait()
-    
-
-    ~\AppData\Roaming\Python\Python38\site-packages\tensorflow\python\eager\def_function.py in __call__(self, *args, **kwds)
-        826     tracing_count = self.experimental_get_tracing_count()
-        827     with trace.Trace(self._name) as tm:
-    --> 828       result = self._call(*args, **kwds)
-        829       compiler = "xla" if self._experimental_compile else "nonXla"
-        830       new_tracing_count = self.experimental_get_tracing_count()
-    
-
-    ~\AppData\Roaming\Python\Python38\site-packages\tensorflow\python\eager\def_function.py in _call(self, *args, **kwds)
-        869       # This is the first call of __call__, so we have to initialize.
-        870       initializers = []
-    --> 871       self._initialize(args, kwds, add_initializers_to=initializers)
-        872     finally:
-        873       # At this point we know that the initialization is complete (or less
-    
-
-    ~\AppData\Roaming\Python\Python38\site-packages\tensorflow\python\eager\def_function.py in _initialize(self, args, kwds, add_initializers_to)
-        723     self._graph_deleter = FunctionDeleter(self._lifted_initializer_graph)
-        724     self._concrete_stateful_fn = (
-    --> 725         self._stateful_fn._get_concrete_function_internal_garbage_collected(  # pylint: disable=protected-access
-        726             *args, **kwds))
-        727 
-    
-
-    ~\AppData\Roaming\Python\Python38\site-packages\tensorflow\python\eager\function.py in _get_concrete_function_internal_garbage_collected(self, *args, **kwargs)
-       2967       args, kwargs = None, None
-       2968     with self._lock:
-    -> 2969       graph_function, _ = self._maybe_define_function(args, kwargs)
-       2970     return graph_function
-       2971 
-    
-
-    ~\AppData\Roaming\Python\Python38\site-packages\tensorflow\python\eager\function.py in _maybe_define_function(self, args, kwargs)
-       3359 
-       3360           self._function_cache.missed.add(call_context_key)
-    -> 3361           graph_function = self._create_graph_function(args, kwargs)
-       3362           self._function_cache.primary[cache_key] = graph_function
-       3363 
-    
-
-    ~\AppData\Roaming\Python\Python38\site-packages\tensorflow\python\eager\function.py in _create_graph_function(self, args, kwargs, override_flat_arg_shapes)
-       3194     arg_names = base_arg_names + missing_arg_names
-       3195     graph_function = ConcreteFunction(
-    -> 3196         func_graph_module.func_graph_from_py_func(
-       3197             self._name,
-       3198             self._python_function,
-    
-
-    ~\AppData\Roaming\Python\Python38\site-packages\tensorflow\python\framework\func_graph.py in func_graph_from_py_func(name, python_func, args, kwargs, signature, func_graph, autograph, autograph_options, add_control_dependencies, arg_names, op_return_value, collections, capture_by_value, override_flat_arg_shapes)
-        988         _, original_func = tf_decorator.unwrap(python_func)
-        989 
-    --> 990       func_outputs = python_func(*func_args, **func_kwargs)
-        991 
-        992       # invariant: `func_outputs` contains only Tensors, CompositeTensors,
-    
-
-    ~\AppData\Roaming\Python\Python38\site-packages\tensorflow\python\eager\def_function.py in wrapped_fn(*args, **kwds)
-        632             xla_context.Exit()
-        633         else:
-    --> 634           out = weak_wrapped_fn().__wrapped__(*args, **kwds)
-        635         return out
-        636 
-    
-
-    ~\AppData\Roaming\Python\Python38\site-packages\tensorflow\python\framework\func_graph.py in wrapper(*args, **kwargs)
-        975           except Exception as e:  # pylint:disable=broad-except
-        976             if hasattr(e, "ag_error_metadata"):
-    --> 977               raise e.ag_error_metadata.to_exception(e)
-        978             else:
-        979               raise
-    
-
-    ValueError: in user code:
-    
-        C:\Users\josep\AppData\Roaming\Python\Python38\site-packages\tensorflow\python\keras\engine\training.py:805 train_function  *
-            return step_function(self, iterator)
-        C:\Users\josep\AppData\Roaming\Python\Python38\site-packages\tensorflow\python\keras\engine\training.py:795 step_function  **
-            outputs = model.distribute_strategy.run(run_step, args=(data,))
-        C:\Users\josep\AppData\Roaming\Python\Python38\site-packages\tensorflow\python\distribute\distribute_lib.py:1259 run
-            return self._extended.call_for_each_replica(fn, args=args, kwargs=kwargs)
-        C:\Users\josep\AppData\Roaming\Python\Python38\site-packages\tensorflow\python\distribute\distribute_lib.py:2730 call_for_each_replica
-            return self._call_for_each_replica(fn, args, kwargs)
-        C:\Users\josep\AppData\Roaming\Python\Python38\site-packages\tensorflow\python\distribute\distribute_lib.py:3417 _call_for_each_replica
-            return fn(*args, **kwargs)
-        C:\Users\josep\AppData\Roaming\Python\Python38\site-packages\tensorflow\python\keras\engine\training.py:788 run_step  **
-            outputs = model.train_step(data)
-        C:\Users\josep\AppData\Roaming\Python\Python38\site-packages\tensorflow\python\keras\engine\training.py:755 train_step
-            loss = self.compiled_loss(
-        C:\Users\josep\AppData\Roaming\Python\Python38\site-packages\tensorflow\python\keras\engine\compile_utils.py:203 __call__
-            loss_value = loss_obj(y_t, y_p, sample_weight=sw)
-        C:\Users\josep\AppData\Roaming\Python\Python38\site-packages\tensorflow\python\keras\losses.py:152 __call__
-            losses = call_fn(y_true, y_pred)
-        C:\Users\josep\AppData\Roaming\Python\Python38\site-packages\tensorflow\python\keras\losses.py:256 call  **
-            return ag_fn(y_true, y_pred, **self._fn_kwargs)
-        C:\Users\josep\AppData\Roaming\Python\Python38\site-packages\tensorflow\python\util\dispatch.py:201 wrapper
-            return target(*args, **kwargs)
-        C:\Users\josep\AppData\Roaming\Python\Python38\site-packages\tensorflow\python\keras\losses.py:1608 binary_crossentropy
-            K.binary_crossentropy(y_true, y_pred, from_logits=from_logits), axis=-1)
-        C:\Users\josep\AppData\Roaming\Python\Python38\site-packages\tensorflow\python\util\dispatch.py:201 wrapper
-            return target(*args, **kwargs)
-        C:\Users\josep\AppData\Roaming\Python\Python38\site-packages\tensorflow\python\keras\backend.py:4979 binary_crossentropy
-            return nn.sigmoid_cross_entropy_with_logits(labels=target, logits=output)
-        C:\Users\josep\AppData\Roaming\Python\Python38\site-packages\tensorflow\python\util\dispatch.py:201 wrapper
-            return target(*args, **kwargs)
-        C:\Users\josep\AppData\Roaming\Python\Python38\site-packages\tensorflow\python\ops\nn_impl.py:173 sigmoid_cross_entropy_with_logits
-            raise ValueError("logits and labels must have the same shape (%s vs %s)" %
-    
-        ValueError: logits and labels must have the same shape ((32, 2) vs (32, 1))
+![png](Tweet_Analysis_files/Tweet_Analysis_150_0.png)
     
 
 
 
 ```python
+# Plot the training accuracy vs the number of epochs
 
+acc_values = history_dict['acc'] 
+acc_valid = history_dict['val_acc'] 
+
+plt.figure()
+
+plt.plot(epochs, acc_values, 'g', label='Training Acc')
+plt.plot(epochs, acc_valid, 'r', label='Validation Acc')
+plt.title('Model Accuracy')
+plt.xlabel('Epochs')
+plt.ylabel('Accuracy')
+plt.legend(loc='right')
+plt.show()
 ```
 
-## Deep NLP using Word2Vec
+
+    
+![png](Tweet_Analysis_files/Tweet_Analysis_151_0.png)
+    
+
+
+## NLP using Word2Vec
 
 
 ```python
 from nltk import word_tokenize
 ```
+
+### Tokenize Tweets
 
 
 ```python
@@ -5245,49 +5480,51 @@ data[:10]
 
 
 
+### Create Word2Vec Model
+
 
 ```python
 model_W2V = Word2Vec(data, size =100, window=5, min_count=1, workers=4)
 ```
 
-    2020-12-17 14:49:38,217 : INFO : collecting all words and their counts
-    2020-12-17 14:49:38,218 : INFO : PROGRESS: at sentence #0, processed 0 words, keeping 0 word types
-    2020-12-17 14:49:38,235 : INFO : collected 5920 word types from a corpus of 86715 raw words and 3500 sentences
-    2020-12-17 14:49:38,236 : INFO : Loading a fresh vocabulary
-    2020-12-17 14:49:38,246 : INFO : effective_min_count=1 retains 5920 unique words (100% of original 5920, drops 0)
-    2020-12-17 14:49:38,247 : INFO : effective_min_count=1 leaves 86715 word corpus (100% of original 86715, drops 0)
-    2020-12-17 14:49:38,263 : INFO : deleting the raw counts dictionary of 5920 items
-    2020-12-17 14:49:38,264 : INFO : sample=0.001 downsamples 52 most-common words
-    2020-12-17 14:49:38,265 : INFO : downsampling leaves estimated 56808 word corpus (65.5% of prior 86715)
-    2020-12-17 14:49:38,278 : INFO : estimated required memory for 5920 words and 100 dimensions: 7696000 bytes
-    2020-12-17 14:49:38,279 : INFO : resetting layer weights
-    2020-12-17 14:49:39,345 : INFO : training model with 4 workers on 5920 vocabulary and 100 features, using sg=0 hs=0 sample=0.001 negative=5 window=5
-    2020-12-17 14:49:39,406 : INFO : worker thread finished; awaiting finish of 3 more threads
-    2020-12-17 14:49:39,408 : INFO : worker thread finished; awaiting finish of 2 more threads
-    2020-12-17 14:49:39,410 : INFO : worker thread finished; awaiting finish of 1 more threads
-    2020-12-17 14:49:39,413 : INFO : worker thread finished; awaiting finish of 0 more threads
-    2020-12-17 14:49:39,414 : INFO : EPOCH - 1 : training on 86715 raw words (56803 effective words) took 0.0s, 1164621 effective words/s
-    2020-12-17 14:49:39,451 : INFO : worker thread finished; awaiting finish of 3 more threads
-    2020-12-17 14:49:39,455 : INFO : worker thread finished; awaiting finish of 2 more threads
-    2020-12-17 14:49:39,459 : INFO : worker thread finished; awaiting finish of 1 more threads
-    2020-12-17 14:49:39,460 : INFO : worker thread finished; awaiting finish of 0 more threads
-    2020-12-17 14:49:39,460 : INFO : EPOCH - 2 : training on 86715 raw words (56660 effective words) took 0.0s, 1418255 effective words/s
-    2020-12-17 14:49:39,497 : INFO : worker thread finished; awaiting finish of 3 more threads
-    2020-12-17 14:49:39,500 : INFO : worker thread finished; awaiting finish of 2 more threads
-    2020-12-17 14:49:39,503 : INFO : worker thread finished; awaiting finish of 1 more threads
-    2020-12-17 14:49:39,505 : INFO : worker thread finished; awaiting finish of 0 more threads
-    2020-12-17 14:49:39,506 : INFO : EPOCH - 3 : training on 86715 raw words (56731 effective words) took 0.0s, 1414297 effective words/s
-    2020-12-17 14:49:39,545 : INFO : worker thread finished; awaiting finish of 3 more threads
-    2020-12-17 14:49:39,549 : INFO : worker thread finished; awaiting finish of 2 more threads
-    2020-12-17 14:49:39,550 : INFO : worker thread finished; awaiting finish of 1 more threads
-    2020-12-17 14:49:39,552 : INFO : worker thread finished; awaiting finish of 0 more threads
-    2020-12-17 14:49:39,553 : INFO : EPOCH - 4 : training on 86715 raw words (56764 effective words) took 0.0s, 1373121 effective words/s
-    2020-12-17 14:49:39,588 : INFO : worker thread finished; awaiting finish of 3 more threads
-    2020-12-17 14:49:39,594 : INFO : worker thread finished; awaiting finish of 2 more threads
-    2020-12-17 14:49:39,596 : INFO : worker thread finished; awaiting finish of 1 more threads
-    2020-12-17 14:49:39,598 : INFO : worker thread finished; awaiting finish of 0 more threads
-    2020-12-17 14:49:39,598 : INFO : EPOCH - 5 : training on 86715 raw words (56899 effective words) took 0.0s, 1410115 effective words/s
-    2020-12-17 14:49:39,599 : INFO : training on a 433575 raw words (283857 effective words) took 0.3s, 1126687 effective words/s
+    2020-12-23 10:32:22,951 : INFO : collecting all words and their counts
+    2020-12-23 10:32:22,952 : INFO : PROGRESS: at sentence #0, processed 0 words, keeping 0 word types
+    2020-12-23 10:32:22,972 : INFO : collected 5920 word types from a corpus of 86715 raw words and 3500 sentences
+    2020-12-23 10:32:22,973 : INFO : Loading a fresh vocabulary
+    2020-12-23 10:32:22,986 : INFO : effective_min_count=1 retains 5920 unique words (100% of original 5920, drops 0)
+    2020-12-23 10:32:22,987 : INFO : effective_min_count=1 leaves 86715 word corpus (100% of original 86715, drops 0)
+    2020-12-23 10:32:23,005 : INFO : deleting the raw counts dictionary of 5920 items
+    2020-12-23 10:32:23,006 : INFO : sample=0.001 downsamples 52 most-common words
+    2020-12-23 10:32:23,006 : INFO : downsampling leaves estimated 56808 word corpus (65.5% of prior 86715)
+    2020-12-23 10:32:23,022 : INFO : estimated required memory for 5920 words and 100 dimensions: 7696000 bytes
+    2020-12-23 10:32:23,022 : INFO : resetting layer weights
+    2020-12-23 10:32:24,116 : INFO : training model with 4 workers on 5920 vocabulary and 100 features, using sg=0 hs=0 sample=0.001 negative=5 window=5
+    2020-12-23 10:32:24,170 : INFO : worker thread finished; awaiting finish of 3 more threads
+    2020-12-23 10:32:24,172 : INFO : worker thread finished; awaiting finish of 2 more threads
+    2020-12-23 10:32:24,174 : INFO : worker thread finished; awaiting finish of 1 more threads
+    2020-12-23 10:32:24,175 : INFO : worker thread finished; awaiting finish of 0 more threads
+    2020-12-23 10:32:24,176 : INFO : EPOCH - 1 : training on 86715 raw words (56678 effective words) took 0.1s, 1077414 effective words/s
+    2020-12-23 10:32:24,221 : INFO : worker thread finished; awaiting finish of 3 more threads
+    2020-12-23 10:32:24,223 : INFO : worker thread finished; awaiting finish of 2 more threads
+    2020-12-23 10:32:24,227 : INFO : worker thread finished; awaiting finish of 1 more threads
+    2020-12-23 10:32:24,230 : INFO : worker thread finished; awaiting finish of 0 more threads
+    2020-12-23 10:32:24,230 : INFO : EPOCH - 2 : training on 86715 raw words (56756 effective words) took 0.0s, 1214011 effective words/s
+    2020-12-23 10:32:24,273 : INFO : worker thread finished; awaiting finish of 3 more threads
+    2020-12-23 10:32:24,278 : INFO : worker thread finished; awaiting finish of 2 more threads
+    2020-12-23 10:32:24,282 : INFO : worker thread finished; awaiting finish of 1 more threads
+    2020-12-23 10:32:24,285 : INFO : worker thread finished; awaiting finish of 0 more threads
+    2020-12-23 10:32:24,286 : INFO : EPOCH - 3 : training on 86715 raw words (56789 effective words) took 0.0s, 1145385 effective words/s
+    2020-12-23 10:32:24,332 : INFO : worker thread finished; awaiting finish of 3 more threads
+    2020-12-23 10:32:24,337 : INFO : worker thread finished; awaiting finish of 2 more threads
+    2020-12-23 10:32:24,338 : INFO : worker thread finished; awaiting finish of 1 more threads
+    2020-12-23 10:32:24,339 : INFO : worker thread finished; awaiting finish of 0 more threads
+    2020-12-23 10:32:24,340 : INFO : EPOCH - 4 : training on 86715 raw words (56784 effective words) took 0.0s, 1267791 effective words/s
+    2020-12-23 10:32:24,382 : INFO : worker thread finished; awaiting finish of 3 more threads
+    2020-12-23 10:32:24,389 : INFO : worker thread finished; awaiting finish of 2 more threads
+    2020-12-23 10:32:24,390 : INFO : worker thread finished; awaiting finish of 1 more threads
+    2020-12-23 10:32:24,392 : INFO : worker thread finished; awaiting finish of 0 more threads
+    2020-12-23 10:32:24,392 : INFO : EPOCH - 5 : training on 86715 raw words (56806 effective words) took 0.0s, 1247510 effective words/s
+    2020-12-23 10:32:24,393 : INFO : training on a 433575 raw words (283813 effective words) took 0.3s, 1027608 effective words/s
     
 
 
@@ -5295,65 +5532,65 @@ model_W2V = Word2Vec(data, size =100, window=5, min_count=1, workers=4)
 model_W2V.train(data,total_examples=model_W2V.corpus_count, epochs=10)
 ```
 
-    2020-12-17 14:49:39,603 : WARNING : Effective 'alpha' higher than previous training cycles
-    2020-12-17 14:49:39,604 : INFO : training model with 4 workers on 5920 vocabulary and 100 features, using sg=0 hs=0 sample=0.001 negative=5 window=5
-    2020-12-17 14:49:39,650 : INFO : worker thread finished; awaiting finish of 3 more threads
-    2020-12-17 14:49:39,655 : INFO : worker thread finished; awaiting finish of 2 more threads
-    2020-12-17 14:49:39,660 : INFO : worker thread finished; awaiting finish of 1 more threads
-    2020-12-17 14:49:39,662 : INFO : worker thread finished; awaiting finish of 0 more threads
-    2020-12-17 14:49:39,663 : INFO : EPOCH - 1 : training on 86715 raw words (56819 effective words) took 0.0s, 1158297 effective words/s
-    2020-12-17 14:49:39,705 : INFO : worker thread finished; awaiting finish of 3 more threads
-    2020-12-17 14:49:39,712 : INFO : worker thread finished; awaiting finish of 2 more threads
-    2020-12-17 14:49:39,714 : INFO : worker thread finished; awaiting finish of 1 more threads
-    2020-12-17 14:49:39,715 : INFO : worker thread finished; awaiting finish of 0 more threads
-    2020-12-17 14:49:39,716 : INFO : EPOCH - 2 : training on 86715 raw words (56894 effective words) took 0.0s, 1214132 effective words/s
-    2020-12-17 14:49:39,752 : INFO : worker thread finished; awaiting finish of 3 more threads
-    2020-12-17 14:49:39,755 : INFO : worker thread finished; awaiting finish of 2 more threads
-    2020-12-17 14:49:39,759 : INFO : worker thread finished; awaiting finish of 1 more threads
-    2020-12-17 14:49:39,760 : INFO : worker thread finished; awaiting finish of 0 more threads
-    2020-12-17 14:49:39,761 : INFO : EPOCH - 3 : training on 86715 raw words (56831 effective words) took 0.0s, 1459046 effective words/s
-    2020-12-17 14:49:39,800 : INFO : worker thread finished; awaiting finish of 3 more threads
-    2020-12-17 14:49:39,806 : INFO : worker thread finished; awaiting finish of 2 more threads
-    2020-12-17 14:49:39,807 : INFO : worker thread finished; awaiting finish of 1 more threads
-    2020-12-17 14:49:39,808 : INFO : worker thread finished; awaiting finish of 0 more threads
-    2020-12-17 14:49:39,809 : INFO : EPOCH - 4 : training on 86715 raw words (56898 effective words) took 0.0s, 1351734 effective words/s
-    2020-12-17 14:49:39,845 : INFO : worker thread finished; awaiting finish of 3 more threads
-    2020-12-17 14:49:39,849 : INFO : worker thread finished; awaiting finish of 2 more threads
-    2020-12-17 14:49:39,852 : INFO : worker thread finished; awaiting finish of 1 more threads
-    2020-12-17 14:49:39,854 : INFO : worker thread finished; awaiting finish of 0 more threads
-    2020-12-17 14:49:39,855 : INFO : EPOCH - 5 : training on 86715 raw words (56933 effective words) took 0.0s, 1403009 effective words/s
-    2020-12-17 14:49:39,893 : INFO : worker thread finished; awaiting finish of 3 more threads
-    2020-12-17 14:49:39,895 : INFO : worker thread finished; awaiting finish of 2 more threads
-    2020-12-17 14:49:39,899 : INFO : worker thread finished; awaiting finish of 1 more threads
-    2020-12-17 14:49:39,900 : INFO : worker thread finished; awaiting finish of 0 more threads
-    2020-12-17 14:49:39,901 : INFO : EPOCH - 6 : training on 86715 raw words (56743 effective words) took 0.0s, 1420311 effective words/s
-    2020-12-17 14:49:39,940 : INFO : worker thread finished; awaiting finish of 3 more threads
-    2020-12-17 14:49:39,946 : INFO : worker thread finished; awaiting finish of 2 more threads
-    2020-12-17 14:49:39,949 : INFO : worker thread finished; awaiting finish of 1 more threads
-    2020-12-17 14:49:39,950 : INFO : worker thread finished; awaiting finish of 0 more threads
-    2020-12-17 14:49:39,951 : INFO : EPOCH - 7 : training on 86715 raw words (56833 effective words) took 0.0s, 1309254 effective words/s
-    2020-12-17 14:49:39,990 : INFO : worker thread finished; awaiting finish of 3 more threads
-    2020-12-17 14:49:39,996 : INFO : worker thread finished; awaiting finish of 2 more threads
-    2020-12-17 14:49:39,997 : INFO : worker thread finished; awaiting finish of 1 more threads
-    2020-12-17 14:49:40,000 : INFO : worker thread finished; awaiting finish of 0 more threads
-    2020-12-17 14:49:40,000 : INFO : EPOCH - 8 : training on 86715 raw words (56803 effective words) took 0.0s, 1338913 effective words/s
-    2020-12-17 14:49:40,039 : INFO : worker thread finished; awaiting finish of 3 more threads
-    2020-12-17 14:49:40,041 : INFO : worker thread finished; awaiting finish of 2 more threads
-    2020-12-17 14:49:40,044 : INFO : worker thread finished; awaiting finish of 1 more threads
-    2020-12-17 14:49:40,045 : INFO : worker thread finished; awaiting finish of 0 more threads
-    2020-12-17 14:49:40,046 : INFO : EPOCH - 9 : training on 86715 raw words (56790 effective words) took 0.0s, 1508270 effective words/s
-    2020-12-17 14:49:40,086 : INFO : worker thread finished; awaiting finish of 3 more threads
-    2020-12-17 14:49:40,088 : INFO : worker thread finished; awaiting finish of 2 more threads
-    2020-12-17 14:49:40,093 : INFO : worker thread finished; awaiting finish of 1 more threads
-    2020-12-17 14:49:40,093 : INFO : worker thread finished; awaiting finish of 0 more threads
-    2020-12-17 14:49:40,094 : INFO : EPOCH - 10 : training on 86715 raw words (56776 effective words) took 0.0s, 1327485 effective words/s
-    2020-12-17 14:49:40,094 : INFO : training on a 867150 raw words (568320 effective words) took 0.5s, 1169129 effective words/s
+    2020-12-23 10:32:24,400 : WARNING : Effective 'alpha' higher than previous training cycles
+    2020-12-23 10:32:24,401 : INFO : training model with 4 workers on 5920 vocabulary and 100 features, using sg=0 hs=0 sample=0.001 negative=5 window=5
+    2020-12-23 10:32:24,446 : INFO : worker thread finished; awaiting finish of 3 more threads
+    2020-12-23 10:32:24,451 : INFO : worker thread finished; awaiting finish of 2 more threads
+    2020-12-23 10:32:24,455 : INFO : worker thread finished; awaiting finish of 1 more threads
+    2020-12-23 10:32:24,457 : INFO : worker thread finished; awaiting finish of 0 more threads
+    2020-12-23 10:32:24,458 : INFO : EPOCH - 1 : training on 86715 raw words (56688 effective words) took 0.1s, 1132709 effective words/s
+    2020-12-23 10:32:24,507 : INFO : worker thread finished; awaiting finish of 3 more threads
+    2020-12-23 10:32:24,513 : INFO : worker thread finished; awaiting finish of 2 more threads
+    2020-12-23 10:32:24,514 : INFO : worker thread finished; awaiting finish of 1 more threads
+    2020-12-23 10:32:24,515 : INFO : worker thread finished; awaiting finish of 0 more threads
+    2020-12-23 10:32:24,516 : INFO : EPOCH - 2 : training on 86715 raw words (56727 effective words) took 0.0s, 1153989 effective words/s
+    2020-12-23 10:32:24,556 : INFO : worker thread finished; awaiting finish of 3 more threads
+    2020-12-23 10:32:24,560 : INFO : worker thread finished; awaiting finish of 2 more threads
+    2020-12-23 10:32:24,565 : INFO : worker thread finished; awaiting finish of 1 more threads
+    2020-12-23 10:32:24,567 : INFO : worker thread finished; awaiting finish of 0 more threads
+    2020-12-23 10:32:24,567 : INFO : EPOCH - 3 : training on 86715 raw words (56585 effective words) took 0.0s, 1233657 effective words/s
+    2020-12-23 10:32:24,613 : INFO : worker thread finished; awaiting finish of 3 more threads
+    2020-12-23 10:32:24,617 : INFO : worker thread finished; awaiting finish of 2 more threads
+    2020-12-23 10:32:24,618 : INFO : worker thread finished; awaiting finish of 1 more threads
+    2020-12-23 10:32:24,619 : INFO : worker thread finished; awaiting finish of 0 more threads
+    2020-12-23 10:32:24,620 : INFO : EPOCH - 4 : training on 86715 raw words (56940 effective words) took 0.0s, 1275632 effective words/s
+    2020-12-23 10:32:24,665 : INFO : worker thread finished; awaiting finish of 3 more threads
+    2020-12-23 10:32:24,671 : INFO : worker thread finished; awaiting finish of 2 more threads
+    2020-12-23 10:32:24,675 : INFO : worker thread finished; awaiting finish of 1 more threads
+    2020-12-23 10:32:24,676 : INFO : worker thread finished; awaiting finish of 0 more threads
+    2020-12-23 10:32:24,677 : INFO : EPOCH - 5 : training on 86715 raw words (56784 effective words) took 0.1s, 1130163 effective words/s
+    2020-12-23 10:32:24,718 : INFO : worker thread finished; awaiting finish of 3 more threads
+    2020-12-23 10:32:24,724 : INFO : worker thread finished; awaiting finish of 2 more threads
+    2020-12-23 10:32:24,725 : INFO : worker thread finished; awaiting finish of 1 more threads
+    2020-12-23 10:32:24,726 : INFO : worker thread finished; awaiting finish of 0 more threads
+    2020-12-23 10:32:24,727 : INFO : EPOCH - 6 : training on 86715 raw words (56796 effective words) took 0.0s, 1283618 effective words/s
+    2020-12-23 10:32:24,765 : INFO : worker thread finished; awaiting finish of 3 more threads
+    2020-12-23 10:32:24,772 : INFO : worker thread finished; awaiting finish of 2 more threads
+    2020-12-23 10:32:24,773 : INFO : worker thread finished; awaiting finish of 1 more threads
+    2020-12-23 10:32:24,776 : INFO : worker thread finished; awaiting finish of 0 more threads
+    2020-12-23 10:32:24,777 : INFO : EPOCH - 7 : training on 86715 raw words (56687 effective words) took 0.0s, 1287861 effective words/s
+    2020-12-23 10:32:24,818 : INFO : worker thread finished; awaiting finish of 3 more threads
+    2020-12-23 10:32:24,823 : INFO : worker thread finished; awaiting finish of 2 more threads
+    2020-12-23 10:32:24,827 : INFO : worker thread finished; awaiting finish of 1 more threads
+    2020-12-23 10:32:24,830 : INFO : worker thread finished; awaiting finish of 0 more threads
+    2020-12-23 10:32:24,831 : INFO : EPOCH - 8 : training on 86715 raw words (56927 effective words) took 0.0s, 1201724 effective words/s
+    2020-12-23 10:32:24,872 : INFO : worker thread finished; awaiting finish of 3 more threads
+    2020-12-23 10:32:24,879 : INFO : worker thread finished; awaiting finish of 2 more threads
+    2020-12-23 10:32:24,880 : INFO : worker thread finished; awaiting finish of 1 more threads
+    2020-12-23 10:32:24,881 : INFO : worker thread finished; awaiting finish of 0 more threads
+    2020-12-23 10:32:24,882 : INFO : EPOCH - 9 : training on 86715 raw words (56887 effective words) took 0.0s, 1250761 effective words/s
+    2020-12-23 10:32:24,922 : INFO : worker thread finished; awaiting finish of 3 more threads
+    2020-12-23 10:32:24,929 : INFO : worker thread finished; awaiting finish of 2 more threads
+    2020-12-23 10:32:24,930 : INFO : worker thread finished; awaiting finish of 1 more threads
+    2020-12-23 10:32:24,931 : INFO : worker thread finished; awaiting finish of 0 more threads
+    2020-12-23 10:32:24,931 : INFO : EPOCH - 10 : training on 86715 raw words (56789 effective words) took 0.0s, 1301291 effective words/s
+    2020-12-23 10:32:24,932 : INFO : training on a 867150 raw words (567810 effective words) took 0.5s, 1071163 effective words/s
     
 
 
 
 
-    (568320, 867150)
+    (567810, 867150)
 
 
 
@@ -5367,19 +5604,22 @@ wv = model_W2V.wv
 wv.most_similar(positive='phone')
 ```
 
+    2020-12-23 10:32:25,357 : INFO : precomputing L2-norms of word weight vectors
+    
 
 
 
-    [('moment-it', 0.9723027348518372),
-     ('nor', 0.9712374806404114),
-     ('tweeted', 0.9692162275314331),
-     ('3g', 0.9681060314178467),
-     ('-Google', 0.9630390405654907),
-     ('horrendous', 0.9612216353416443),
-     ('dawdled', 0.9598613381385803),
-     ('correcting', 0.9595307111740112),
-     ('My', 0.9591711759567261),
-     ('Qrank', 0.9568673372268677)]
+
+    [('Ubuntu', 0.9763219356536865),
+     ('3g', 0.9685029983520508),
+     ('tweeted', 0.9618393182754517),
+     ('Qrank', 0.959566593170166),
+     ('horrendous', 0.958916187286377),
+     ('words', 0.9553130865097046),
+     ('bluetooth', 0.9540582895278931),
+     ('leather', 0.951541543006897),
+     ('Thursday', 0.9499979615211487),
+     ('cases', 0.9488207101821899)]
 
 
 
@@ -5391,26 +5631,26 @@ wv['help']
 
 
 
-    array([-0.31967285, -0.17885478,  0.01392739, -0.20652783, -0.24002904,
-            0.05603355,  0.23169126, -0.11376803, -0.11942402, -0.29525623,
-            0.3290574 ,  0.06339365,  0.3104117 ,  0.05134623,  0.12008827,
-           -0.2247823 ,  0.01781183, -0.1464717 , -0.1455513 ,  0.07288111,
-           -0.03163346,  0.29379946, -0.00203749,  0.02973694, -0.2917498 ,
-           -0.28070888, -0.26782623,  0.10527655, -0.14054094, -0.03771594,
-            0.33188355, -0.02599237, -0.0525349 ,  0.05000544,  0.04384491,
-            0.19176967, -0.04553479, -0.08937339, -0.02473517,  0.01382217,
-           -0.0907728 ,  0.28192258,  0.19038127,  0.00607586, -0.01968819,
-            0.0785262 ,  0.21970062,  0.28426826,  0.10126912,  0.14359671,
-            0.05886083, -0.18110804,  0.18728036, -0.19307703, -0.0777308 ,
-            0.25104517, -0.47962093,  0.13631037,  0.00184456,  0.01349466,
-           -0.1595733 ,  0.25049472,  0.12245066,  0.2686916 ,  0.02174757,
-            0.31893703,  0.11131237,  0.01023629,  0.01475756, -0.0240675 ,
-           -0.19176066, -0.18991126,  0.24131042, -0.33164704,  0.17345098,
-           -0.01427521, -0.20412044, -0.10288385,  0.05892187, -0.12293504,
-           -0.03255542, -0.09149769,  0.1287596 , -0.13189872, -0.07963987,
-           -0.23899263,  0.10492894, -0.09980745, -0.04041791, -0.14108348,
-            0.05543073, -0.10543934, -0.08044261,  0.47764343,  0.19938034,
-           -0.1042861 ,  0.3239305 , -0.32515568, -0.02896872,  0.25202996],
+    array([-0.05602682,  0.1898873 , -0.04284276, -0.09649099, -0.0919168 ,
+            0.15212974,  0.19682896,  0.21751685, -0.03360185, -0.24705708,
+            0.08084903,  0.00062578,  0.11321343, -0.03866779,  0.06944523,
+            0.04494823,  0.02281479, -0.06902155,  0.06123722,  0.01340639,
+           -0.11258984,  0.10590371, -0.04277435, -0.29310337,  0.12547119,
+            0.26872963, -0.15748288,  0.0803702 , -0.03750943,  0.13433443,
+            0.14194822,  0.1628125 ,  0.11665671,  0.35196766, -0.00845829,
+           -0.18044046,  0.05874589, -0.13683037, -0.03252002, -0.08289275,
+           -0.35061875,  0.09212191, -0.1106097 ,  0.21421194, -0.02004252,
+           -0.06794347,  0.14174776, -0.00507101,  0.44819406,  0.11436772,
+            0.20344055, -0.11549824,  0.39827913,  0.0403868 , -0.21902487,
+           -0.10420201, -0.1485029 ,  0.04777614,  0.1415703 ,  0.09671021,
+           -0.10265251, -0.01838774, -0.24499744, -0.03473309, -0.02861528,
+            0.31340402,  0.02488031,  0.14073284, -0.18057962, -0.09320375,
+            0.01304666, -0.11724676, -0.28735343,  0.0397812 ,  0.19223985,
+            0.51412284,  0.10686409,  0.15148091, -0.2194091 ,  0.14679854,
+           -0.27218127, -0.17965911, -0.02672608,  0.34494448,  0.10500586,
+           -0.13947481,  0.18468934, -0.171683  , -0.12317169, -0.2332293 ,
+            0.2534559 , -0.1023906 ,  0.05763213,  0.00081763,  0.29812163,
+            0.11533024, -0.1922864 , -0.34497595,  0.410213  , -0.2201724 ],
           dtype=float32)
 
 
@@ -5423,19 +5663,19 @@ wv.vectors
 
 
 
-    array([[-0.22285825, -0.9334564 , -0.49763873, ..., -0.39693695,
-            -0.4778785 ,  0.5305556 ],
-           [-0.646233  , -0.7081872 , -0.23683992, ..., -0.5656346 ,
-            -0.08979444,  0.38222355],
-           [-0.01102781, -0.7331643 , -0.31039104, ...,  0.25689587,
-            -1.2840519 ,  0.3224538 ],
+    array([[ 2.76873916e-01,  1.83803201e-01,  2.84476489e-01, ...,
+            -1.05843592e+00,  1.04563355e+00, -1.01885712e+00],
+           [ 2.99914071e-04,  1.38045833e-01,  2.80075252e-01, ...,
+            -5.56849182e-01,  9.46540236e-01, -2.01369002e-01],
+           [ 2.78386146e-01,  5.39122336e-02, -3.57363671e-01, ...,
+             7.83293486e-01,  1.70851719e+00, -1.23066807e+00],
            ...,
-           [-0.03657845, -0.04447062, -0.0088504 , ..., -0.0449322 ,
-            -0.02913979,  0.0439421 ],
-           [-0.00787574,  0.02462851, -0.01310325, ...,  0.00459611,
-            -0.03039238,  0.0015835 ],
-           [-0.02813163,  0.00890381, -0.00215271, ..., -0.01855575,
-            -0.00444138,  0.0224769 ]], dtype=float32)
+           [ 1.76791963e-03,  1.27185816e-02,  1.74027160e-02, ...,
+            -4.42583039e-02,  6.29356056e-02, -4.80316393e-02],
+           [-1.10923415e-02,  3.84353064e-02, -6.00480847e-02, ...,
+             4.23184270e-03,  7.28718191e-03, -3.51879671e-02],
+           [-1.42478868e-02,  4.16393392e-02, -3.33269723e-02, ...,
+            -2.43994873e-02,  2.45368425e-02, -2.68926378e-02]], dtype=float32)
 
 
 
@@ -5444,6 +5684,8 @@ wv.vectors
 df_tech = pd.DataFrame(wv.most_similar(positive=['technology']))
 ```
 
+### Most Similar Words
+
 
 ```python
 fig_dims = (20,8)
@@ -5451,7 +5693,8 @@ fig, ax = plt.subplots(figsize=fig_dims)
 sns.set(font_scale=2)
 sns.set_style("darkgrid")
 palette = sns.set_palette("dark")
-ax = sns.barplot(x=df_tech.head(10)[0], y=df_tech.head(10)[1], palette=palette)
+ax = sns.barplot(x=df_tech.head(10)[0], y=df_tech.head(10)[1], 
+                 palette=palette)
 ax.set(xlabel="Word",ylabel="Most Similar")
 plt.ticklabel_format(style='plain',axis='y')
 plt.ylim(.8,1)
@@ -5462,7 +5705,7 @@ plt.show()
 
 
     
-![png](Tweet_Analysis_files/Tweet_Analysis_135_0.png)
+![png](Tweet_Analysis_files/Tweet_Analysis_166_0.png)
     
 
 
@@ -5501,52 +5744,52 @@ df_google
     <tr>
       <th>0</th>
       <td>maps</td>
-      <td>0.938149</td>
+      <td>0.929473</td>
     </tr>
     <tr>
       <th>1</th>
-      <td>doodle</td>
-      <td>0.911753</td>
+      <td>failing</td>
+      <td>0.922450</td>
     </tr>
     <tr>
       <th>2</th>
-      <td>Each</td>
-      <td>0.910172</td>
+      <td>mobile</td>
+      <td>0.911939</td>
     </tr>
     <tr>
       <th>3</th>
-      <td>150</td>
-      <td>0.909193</td>
+      <td>Shout</td>
+      <td>0.893278</td>
     </tr>
     <tr>
       <th>4</th>
-      <td>aclu</td>
-      <td>0.902651</td>
+      <td>cause</td>
+      <td>0.893064</td>
     </tr>
     <tr>
       <th>5</th>
-      <td>mobile</td>
-      <td>0.895684</td>
+      <td>Pearl</td>
+      <td>0.892217</td>
     </tr>
     <tr>
       <th>6</th>
-      <td>tight</td>
-      <td>0.891417</td>
+      <td>speaking</td>
+      <td>0.890346</td>
     </tr>
     <tr>
       <th>7</th>
-      <td>another</td>
-      <td>0.890622</td>
+      <td>pandora</td>
+      <td>0.887791</td>
     </tr>
     <tr>
       <th>8</th>
-      <td>unpaid</td>
-      <td>0.888086</td>
+      <td>smartphone</td>
+      <td>0.884425</td>
     </tr>
     <tr>
       <th>9</th>
-      <td>Wowwwwww</td>
-      <td>0.887056</td>
+      <td>150</td>
+      <td>0.884131</td>
     </tr>
   </tbody>
 </table>
@@ -5561,7 +5804,8 @@ fig, ax = plt.subplots(figsize=fig_dims)
 sns.set(font_scale=2)
 sns.set_style("darkgrid")
 palette = sns.set_palette("dark")
-ax = sns.barplot(x=df_google.head(10)[0], y=df_google.head(10)[1], palette=palette)
+ax = sns.barplot(x=df_google.head(10)[0], y=df_google.head(10)[1], 
+                 palette=palette)
 ax.set(xlabel="Word",ylabel="Most Similar")
 plt.ticklabel_format(style='plain',axis='y')
 plt.ylim(.8,1)
@@ -5572,7 +5816,7 @@ plt.show()
 
 
     
-![png](Tweet_Analysis_files/Tweet_Analysis_137_0.png)
+![png](Tweet_Analysis_files/Tweet_Analysis_168_0.png)
     
 
 
@@ -5610,53 +5854,53 @@ df_apple
   <tbody>
     <tr>
       <th>0</th>
-      <td>comes</td>
-      <td>0.907297</td>
+      <td>Where</td>
+      <td>0.920323</td>
     </tr>
     <tr>
       <th>1</th>
-      <td>scheduling</td>
-      <td>0.886354</td>
+      <td>hook</td>
+      <td>0.910789</td>
     </tr>
     <tr>
       <th>2</th>
-      <td>mall</td>
-      <td>0.871902</td>
+      <td>comes</td>
+      <td>0.891961</td>
     </tr>
     <tr>
       <th>3</th>
-      <td>downstairs</td>
-      <td>0.870072</td>
+      <td>scheduling</td>
+      <td>0.888684</td>
     </tr>
     <tr>
       <th>4</th>
-      <td>Where</td>
-      <td>0.861456</td>
+      <td>campus</td>
+      <td>0.873725</td>
     </tr>
     <tr>
       <th>5</th>
       <td>short</td>
-      <td>0.854704</td>
+      <td>0.872290</td>
     </tr>
     <tr>
       <th>6</th>
-      <td>cult</td>
-      <td>0.854672</td>
+      <td>downstairs</td>
+      <td>0.854347</td>
     </tr>
     <tr>
       <th>7</th>
       <td>igottagetit</td>
-      <td>0.841427</td>
+      <td>0.852043</td>
     </tr>
     <tr>
       <th>8</th>
-      <td>nerdheaven</td>
-      <td>0.838491</td>
+      <td>drag</td>
+      <td>0.850543</td>
     </tr>
     <tr>
       <th>9</th>
-      <td>Ave</td>
-      <td>0.836979</td>
+      <td>xD</td>
+      <td>0.843549</td>
     </tr>
   </tbody>
 </table>
@@ -5674,7 +5918,7 @@ palette = sns.set_palette("dark")
 ax = sns.barplot(x=df_apple.head(10)[0], y=df_apple.head(10)[1], palette=palette)
 ax.set(xlabel="Word",ylabel="Most Similar")
 plt.ticklabel_format(style='plain',axis='y')
-plt.ylim(.8,.92)
+plt.ylim(.8,.94)
 plt.xticks(rotation=70)
 plt.title('Top 10 Words Most Similar to Apple')
 plt.show()
@@ -5682,9 +5926,1858 @@ plt.show()
 
 
     
-![png](Tweet_Analysis_files/Tweet_Analysis_139_0.png)
+![png](Tweet_Analysis_files/Tweet_Analysis_170_0.png)
     
 
+
+
+```python
+import nltk
+nltk.download('vader_lexicon')
+
+import matplotlib.pyplot as plt
+import pandas as pd
+import numpy as np
+import random
+from sklearn.model_selection import train_test_split
+from keras.utils.np_utils import to_categorical
+from sklearn import preprocessing
+from keras.preprocessing.text import Tokenizer
+from keras import models
+from keras import layers
+from keras import optimizers
+```
+
+    [nltk_data] Downloading package vader_lexicon to
+    [nltk_data]     C:\Users\josep\AppData\Roaming\nltk_data...
+    [nltk_data]   Package vader_lexicon is already up-to-date!
+    
+
+## Keras NN Multiple Classification
+
+
+```python
+df = pd.read_csv('Tweet.csv')
+df_up = pd.read_csv('Upsampled.csv')
+```
+
+
+```python
+df = df.drop(columns='Unnamed: 0')
+```
+
+
+```python
+df.head(5) # normal 
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Tweet</th>
+      <th>Platform</th>
+      <th>Emotion</th>
+      <th>Positive_Bin</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>.@wesley83 I have a 3G iPhone. After 3 hrs twe...</td>
+      <td>iPhone</td>
+      <td>Negative emotion</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>@jessedee Know about @fludapp ? Awesome iPad/i...</td>
+      <td>iPad or iPhone App</td>
+      <td>Positive emotion</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>@swonderlin Can not wait for #iPad 2 also. The...</td>
+      <td>iPad</td>
+      <td>Positive emotion</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>@sxsw I hope this year's festival isn't as cra...</td>
+      <td>iPad or iPhone App</td>
+      <td>Negative emotion</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>@sxtxstate great stuff on Fri #SXSW: Marissa M...</td>
+      <td>Google</td>
+      <td>Positive emotion</td>
+      <td>1</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+
+```python
+df_up = df_up.drop(columns='Unnamed: 0')
+```
+
+
+```python
+df_up.head(5) # upsampled for increased number of negative tweets
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Tweet</th>
+      <th>Platform</th>
+      <th>Emotion</th>
+      <th>Positive_Bin</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>At #sxsw #tapworthy iPad Design Headaches - av...</td>
+      <td>iPad</td>
+      <td>Negative emotion</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>RT @mention Part of Journalsim is the support ...</td>
+      <td>NaN</td>
+      <td>Negative emotion</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>Fuck the iphone! RT @mention New #UberSocial f...</td>
+      <td>iPhone</td>
+      <td>Negative emotion</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>#SXSW 2011: Novelty of iPad news apps fades fa...</td>
+      <td>iPad</td>
+      <td>Negative emotion</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>New #SXSW rule: no more ooing and ahing over y...</td>
+      <td>iPad</td>
+      <td>Negative emotion</td>
+      <td>0</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+
+```python
+df.info()
+```
+
+    <class 'pandas.core.frame.DataFrame'>
+    RangeIndex: 3548 entries, 0 to 3547
+    Data columns (total 4 columns):
+     #   Column        Non-Null Count  Dtype 
+    ---  ------        --------------  ----- 
+     0   Tweet         3548 non-null   object
+     1   Platform      3191 non-null   object
+     2   Emotion       3548 non-null   object
+     3   Positive_Bin  3548 non-null   int64 
+    dtypes: int64(1), object(3)
+    memory usage: 111.0+ KB
+    
+
+
+```python
+df_up.info()
+```
+
+    <class 'pandas.core.frame.DataFrame'>
+    RangeIndex: 3500 entries, 0 to 3499
+    Data columns (total 4 columns):
+     #   Column        Non-Null Count  Dtype 
+    ---  ------        --------------  ----- 
+     0   Tweet         3500 non-null   object
+     1   Platform      3171 non-null   object
+     2   Emotion       3500 non-null   object
+     3   Positive_Bin  3500 non-null   int64 
+    dtypes: int64(1), object(3)
+    memory usage: 109.5+ KB
+    
+
+
+```python
+df_up['Positive_Bin'].value_counts()
+```
+
+
+
+
+    1    2500
+    0    1000
+    Name: Positive_Bin, dtype: int64
+
+
+
+### VADER Sentiment Analysis
+
+
+```python
+from nltk.sentiment.vader import SentimentIntensityAnalyzer
+```
+
+
+```python
+sid = SentimentIntensityAnalyzer()
+```
+
+
+```python
+df_up['scores'] = df_up['Tweet'].apply(lambda review:sid.polarity_scores(review))
+```
+
+
+```python
+df_up['compound'] = df_up['scores'].apply(lambda d:d['compound'])
+```
+
+
+```python
+df_up['comp_score'] = df_up['compound'].apply(lambda score: 1 
+                                              if score >= 0 else 0)
+```
+
+
+```python
+df_up.head()
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Tweet</th>
+      <th>Platform</th>
+      <th>Emotion</th>
+      <th>Positive_Bin</th>
+      <th>scores</th>
+      <th>compound</th>
+      <th>comp_score</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>At #sxsw #tapworthy iPad Design Headaches - av...</td>
+      <td>iPad</td>
+      <td>Negative emotion</td>
+      <td>0</td>
+      <td>{'neg': 0.153, 'neu': 0.764, 'pos': 0.083, 'co...</td>
+      <td>-0.2732</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>RT @mention Part of Journalsim is the support ...</td>
+      <td>NaN</td>
+      <td>Negative emotion</td>
+      <td>0</td>
+      <td>{'neg': 0.0, 'neu': 0.63, 'pos': 0.37, 'compou...</td>
+      <td>0.8796</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>Fuck the iphone! RT @mention New #UberSocial f...</td>
+      <td>iPhone</td>
+      <td>Negative emotion</td>
+      <td>0</td>
+      <td>{'neg': 0.166, 'neu': 0.834, 'pos': 0.0, 'comp...</td>
+      <td>-0.5848</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>#SXSW 2011: Novelty of iPad news apps fades fa...</td>
+      <td>iPad</td>
+      <td>Negative emotion</td>
+      <td>0</td>
+      <td>{'neg': 0.0, 'neu': 1.0, 'pos': 0.0, 'compound...</td>
+      <td>0.0000</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>New #SXSW rule: no more ooing and ahing over y...</td>
+      <td>iPad</td>
+      <td>Negative emotion</td>
+      <td>0</td>
+      <td>{'neg': 0.083, 'neu': 0.83, 'pos': 0.087, 'com...</td>
+      <td>0.0258</td>
+      <td>1</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+
+```python
+from sklearn.metrics import accuracy_score, classification_report
+from sklearn.metrics import confusion_matrix, plot_confusion_matrix
+```
+
+
+```python
+acc_score = accuracy_score(df_up['Positive_Bin'],df_up['comp_score'])
+```
+
+
+```python
+print('Accuracy Score: ', "{:.3f}".format(acc_score*100),"%")
+```
+
+    Accuracy Score:  75.371 %
+    
+
+
+```python
+print(classification_report(df_up['Positive_Bin'],df_up['comp_score']))
+```
+
+                  precision    recall  f1-score   support
+    
+               0       0.61      0.39      0.47      1000
+               1       0.79      0.90      0.84      2500
+    
+        accuracy                           0.75      3500
+       macro avg       0.70      0.64      0.66      3500
+    weighted avg       0.74      0.75      0.73      3500
+    
+    
+
+### VADER Confusion Matrix
+
+
+```python
+confusion_matrix(df_up['Positive_Bin'],df_up['comp_score'])
+```
+
+
+
+
+    array([[ 389,  611],
+           [ 251, 2249]], dtype=int64)
+
+
+
+#### VADER doesn't do a great job of correctly classifying tweet sentiment, with 611 false positive tweets that are actually negative
+
+
+```python
+full_df = pd.read_csv('Full_DF')
+```
+
+
+```python
+full_df.head()
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Unnamed: 0</th>
+      <th>Tweet</th>
+      <th>Platform</th>
+      <th>Emotion</th>
+      <th>Uncertain</th>
+      <th>Negative</th>
+      <th>No Emotion</th>
+      <th>Positive</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>0</td>
+      <td>.@wesley83 I have a 3G iPhone. After 3 hrs twe...</td>
+      <td>iPhone</td>
+      <td>Negative emotion</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>1</td>
+      <td>@jessedee Know about @fludapp ? Awesome iPad/i...</td>
+      <td>iPad or iPhone App</td>
+      <td>Positive emotion</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>2</td>
+      <td>@swonderlin Can not wait for #iPad 2 also. The...</td>
+      <td>iPad</td>
+      <td>Positive emotion</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>3</td>
+      <td>@sxsw I hope this year's festival isn't as cra...</td>
+      <td>iPad or iPhone App</td>
+      <td>Negative emotion</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>4</td>
+      <td>@sxtxstate great stuff on Fri #SXSW: Marissa M...</td>
+      <td>Google</td>
+      <td>Positive emotion</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+
+```python
+full_df = full_df.drop(columns='Unnamed: 0')
+```
+
+
+```python
+full_df.head(10)
+full_df = full_df.dropna()
+```
+
+### Tokenize Tweets
+
+
+```python
+tweets = full_df['Tweet']
+tokenizer = Tokenizer(num_words=5000)
+tokenizer.fit_on_texts(tweets)
+sequences = tokenizer.texts_to_sequences(tweets)
+print('sequences type: ' , type(sequences))
+```
+
+    sequences type:  <class 'list'>
+    
+
+
+```python
+one_hot_results = tokenizer.texts_to_matrix(tweets, mode='binary')
+print('one_hot_results type:', type(one_hot_results))
+```
+
+    one_hot_results type: <class 'numpy.ndarray'>
+    
+
+
+```python
+word_index = tokenizer.word_index
+print('Found %s unique tokens.' % len(word_index)) 
+```
+
+    Found 5963 unique tokens.
+    
+
+
+```python
+# Our coded data
+print('Dimensions of our coded results:', np.shape(one_hot_results)) 
+```
+
+    Dimensions of our coded results: (3291, 5000)
+    
+
+
+```python
+print(y.shape)
+print(one_hot_results.shape)
+```
+
+    (3500,)
+    (3291, 5000)
+    
+
+
+```python
+emotion = full_df['Emotion']
+
+# Initialize
+le = preprocessing.LabelEncoder() 
+le.fit(emotion)
+print('Original class labels:')
+print(list(le.classes_))
+print('\n')
+emotion_cat = le.transform(emotion)  
+
+# If you wish to retrieve the original descriptive labels post production
+# list(le.inverse_transform([0, 1, 3, 3, 0, 6, 4])) 
+
+print('New product labels:')
+print(emotion_cat)
+print('\n')
+
+# Each row will be all zeros except for the category for that observation 
+print('One hot labels; 4 binary columns, one for each of the categories.') 
+product_onehot = to_categorical(emotion_cat)
+print(product_onehot)
+print('\n')
+
+print('One hot labels shape:')
+print(np.shape(product_onehot))
+```
+
+    Original class labels:
+    ["I can't tell", 'Negative emotion', 'No emotion toward brand or product', 'Positive emotion']
+    
+    
+    New product labels:
+    [1 3 3 ... 1 3 3]
+    
+    
+    One hot labels; 4 binary columns, one for each of the categories.
+    [[0. 1. 0. 0.]
+     [0. 0. 0. 1.]
+     [0. 0. 0. 1.]
+     ...
+     [0. 1. 0. 0.]
+     [0. 0. 0. 1.]
+     [0. 0. 0. 1.]]
+    
+    
+    One hot labels shape:
+    (3291, 4)
+    
+
+
+```python
+random.seed(42)
+test_index = random.sample(range(1,3200), 1500)
+
+test = one_hot_results[test_index]
+train = np.delete(one_hot_results, test_index, 0)
+
+label_test = product_onehot[test_index]
+label_train = np.delete(product_onehot, test_index, 0)
+
+print('Test label shape:', np.shape(label_test))
+print('Train label shape:', np.shape(label_train))
+print('Test shape:', np.shape(test))
+print('Train shape:', np.shape(train))
+```
+
+    Test label shape: (1500, 4)
+    Train label shape: (1791, 4)
+    Test shape: (1500, 5000)
+    Train shape: (1791, 5000)
+    
+
+### Build Neural Network Model
+
+
+```python
+from keras.layers import Input, Dense, LSTM, Embedding
+from keras.layers import Dropout, Activation, Bidirectional, GlobalMaxPool1D
+from keras.models import Sequential
+```
+
+
+```python
+# Initialize  and build a sequential model
+model = models.Sequential()
+# Two layers with relu activation
+model.add(layers.Dense(50, activation='relu', input_shape=(5000,)))
+model.add(layers.Dense(25, activation='relu'))
+model.add(layers.Dense(4, activation='softmax'))
+model.compile(optimizer='adam',
+              loss='categorical_crossentropy',
+              metrics=['acc'])
+```
+
+### Run Model
+
+
+```python
+history = model.fit(train,
+                    label_train,
+                    epochs=20,
+                    batch_size=32,
+                    validation_split=.2)
+```
+
+    Epoch 1/20
+    45/45 [==============================] - 1s 7ms/step - loss: 1.1797 - acc: 0.6434 - val_loss: 0.6647 - val_acc: 0.8162
+    Epoch 2/20
+    45/45 [==============================] - 0s 3ms/step - loss: 0.5406 - acc: 0.8168 - val_loss: 0.6306 - val_acc: 0.8162
+    Epoch 3/20
+    45/45 [==============================] - 0s 4ms/step - loss: 0.4077 - acc: 0.8263 - val_loss: 0.6020 - val_acc: 0.8273
+    Epoch 4/20
+    45/45 [==============================] - 0s 3ms/step - loss: 0.2787 - acc: 0.9228 - val_loss: 0.5894 - val_acc: 0.8329
+    Epoch 5/20
+    45/45 [==============================] - 0s 4ms/step - loss: 0.1811 - acc: 0.9481 - val_loss: 0.5970 - val_acc: 0.8162
+    Epoch 6/20
+    45/45 [==============================] - 0s 4ms/step - loss: 0.1098 - acc: 0.9646 - val_loss: 0.6443 - val_acc: 0.8357
+    Epoch 7/20
+    45/45 [==============================] - 0s 4ms/step - loss: 0.0641 - acc: 0.9808 - val_loss: 0.6670 - val_acc: 0.8301
+    Epoch 8/20
+    45/45 [==============================] - 0s 3ms/step - loss: 0.0338 - acc: 0.9954 - val_loss: 0.7109 - val_acc: 0.8329
+    Epoch 9/20
+    45/45 [==============================] - 0s 3ms/step - loss: 0.0269 - acc: 0.9943 - val_loss: 0.7503 - val_acc: 0.8301
+    Epoch 10/20
+    45/45 [==============================] - 0s 3ms/step - loss: 0.0220 - acc: 0.9955 - val_loss: 0.8251 - val_acc: 0.8357
+    Epoch 11/20
+    45/45 [==============================] - 0s 3ms/step - loss: 0.0142 - acc: 0.9949 - val_loss: 0.8194 - val_acc: 0.8273
+    Epoch 12/20
+    45/45 [==============================] - 0s 3ms/step - loss: 0.0140 - acc: 0.9971 - val_loss: 0.8714 - val_acc: 0.8329
+    Epoch 13/20
+    45/45 [==============================] - 0s 3ms/step - loss: 0.0093 - acc: 0.9991 - val_loss: 0.8881 - val_acc: 0.8357
+    Epoch 14/20
+    45/45 [==============================] - 0s 3ms/step - loss: 0.0104 - acc: 0.9963 - val_loss: 0.9032 - val_acc: 0.8301
+    Epoch 15/20
+    45/45 [==============================] - 0s 3ms/step - loss: 0.0077 - acc: 0.9986 - val_loss: 0.9141 - val_acc: 0.8329
+    Epoch 16/20
+    45/45 [==============================] - 0s 4ms/step - loss: 0.0076 - acc: 0.9972 - val_loss: 0.9391 - val_acc: 0.8329
+    Epoch 17/20
+    45/45 [==============================] - 0s 3ms/step - loss: 0.0086 - acc: 0.9976 - val_loss: 0.9571 - val_acc: 0.8301
+    Epoch 18/20
+    45/45 [==============================] - 0s 3ms/step - loss: 0.0064 - acc: 0.9979 - val_loss: 0.9948 - val_acc: 0.8357
+    Epoch 19/20
+    45/45 [==============================] - 0s 3ms/step - loss: 0.0045 - acc: 0.9991 - val_loss: 0.9862 - val_acc: 0.8301
+    Epoch 20/20
+    45/45 [==============================] - 0s 3ms/step - loss: 0.0042 - acc: 0.9982 - val_loss: 1.0241 - val_acc: 0.8329
+    
+
+
+```python
+history_dict = history.history
+```
+
+
+```python
+history_dict.keys()
+```
+
+
+
+
+    dict_keys(['loss', 'acc', 'val_loss', 'val_acc'])
+
+
+
+### Training and Validation Graphs
+
+
+```python
+history_dict = history.history
+loss_values = history_dict['loss']
+loss_valid = history_dict['val_loss']
+
+epochs = range(1, len(loss_values) + 1)
+
+plt.plot(epochs, loss_values, 'g', label='Training Loss')
+plt.plot(epochs, loss_valid, 'r', label='Validation Loss')
+plt.title('Training Loss')
+plt.xlabel('Epochs')
+plt.ylabel('Loss')
+plt.legend()
+plt.show()
+```
+
+
+    
+![png](Tweet_Analysis_files/Tweet_Analysis_215_0.png)
+    
+
+
+
+```python
+# Plot the training accuracy vs the number of epochs
+
+acc_values = history_dict['acc'] 
+acc_valid = history_dict['val_acc'] 
+
+plt.figure()
+
+plt.plot(epochs, acc_values, 'g', label='Training Acc')
+plt.plot(epochs, acc_valid, 'r', label='Validation Acc')
+plt.title('Model Accuracy')
+plt.xlabel('Epochs')
+plt.ylabel('Accuracy')
+plt.legend(loc='right')
+plt.show()
+```
+
+
+    
+![png](Tweet_Analysis_files/Tweet_Analysis_216_0.png)
+    
+
+
+
+```python
+# Output (probability) predictions for the test set 
+y_hat_test = model.predict(test) 
+```
+
+
+```python
+# Print the loss and accuracy for the training set 
+results_train = model.evaluate(train, label_train)
+results_train
+```
+
+    56/56 [==============================] - 0s 2ms/step - loss: 0.2092 - acc: 0.9654
+    
+
+
+
+
+    [0.20923849940299988, 0.96538245677948]
+
+
+
+
+```python
+results_test = model.evaluate(test, label_test)
+results_test # model predicts on the test data with almost 84% accuracy. 
+```
+
+    47/47 [==============================] - 0s 2ms/step - loss: 0.8503 - acc: 0.8393
+    
+
+
+
+
+    [0.8503161668777466, 0.8393333554267883]
+
+
+
+## Question 1 and Recommendation
+
+### In tweets targeting either the iPhone or Android phones, which product is more often the subject of negatively charged emotions?
+
+
+```python
+df_neg = pd.read_csv('Full_DF')
+df_neg = df_neg.drop(columns='Unnamed: 0')
+```
+
+
+```python
+df_neg.info()
+```
+
+    <class 'pandas.core.frame.DataFrame'>
+    RangeIndex: 9093 entries, 0 to 9092
+    Data columns (total 7 columns):
+     #   Column      Non-Null Count  Dtype 
+    ---  ------      --------------  ----- 
+     0   Tweet       9092 non-null   object
+     1   Platform    3291 non-null   object
+     2   Emotion     9093 non-null   object
+     3   Uncertain   9093 non-null   int64 
+     4   Negative    9093 non-null   int64 
+     5   No Emotion  9093 non-null   int64 
+     6   Positive    9093 non-null   int64 
+    dtypes: int64(4), object(3)
+    memory usage: 497.4+ KB
+    
+
+
+```python
+df_grouped = df_neg.groupby(by=df_neg['Platform']).sum()
+```
+
+
+```python
+df_grouped.index
+```
+
+
+
+
+    Index(['Android', 'Android App', 'Apple', 'Google',
+           'Other Apple product or service', 'Other Google product or service',
+           'iPad', 'iPad or iPhone App', 'iPhone'],
+          dtype='object', name='Platform')
+
+
+
+
+```python
+df_grouped
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Uncertain</th>
+      <th>Negative</th>
+      <th>No Emotion</th>
+      <th>Positive</th>
+    </tr>
+    <tr>
+      <th>Platform</th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>Android</th>
+      <td>0</td>
+      <td>8</td>
+      <td>1</td>
+      <td>69</td>
+    </tr>
+    <tr>
+      <th>Android App</th>
+      <td>0</td>
+      <td>8</td>
+      <td>1</td>
+      <td>72</td>
+    </tr>
+    <tr>
+      <th>Apple</th>
+      <td>2</td>
+      <td>95</td>
+      <td>21</td>
+      <td>543</td>
+    </tr>
+    <tr>
+      <th>Google</th>
+      <td>1</td>
+      <td>68</td>
+      <td>15</td>
+      <td>346</td>
+    </tr>
+    <tr>
+      <th>Other Apple product or service</th>
+      <td>0</td>
+      <td>2</td>
+      <td>1</td>
+      <td>32</td>
+    </tr>
+    <tr>
+      <th>Other Google product or service</th>
+      <td>1</td>
+      <td>47</td>
+      <td>9</td>
+      <td>236</td>
+    </tr>
+    <tr>
+      <th>iPad</th>
+      <td>4</td>
+      <td>125</td>
+      <td>24</td>
+      <td>793</td>
+    </tr>
+    <tr>
+      <th>iPad or iPhone App</th>
+      <td>0</td>
+      <td>63</td>
+      <td>10</td>
+      <td>397</td>
+    </tr>
+    <tr>
+      <th>iPhone</th>
+      <td>1</td>
+      <td>103</td>
+      <td>9</td>
+      <td>184</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+
+```python
+# separate tweets
+df_android = df_grouped.loc[df_grouped.index =='Android']
+df_iphone = df_grouped.loc[df_grouped.index =='iPhone']
+```
+
+
+```python
+df_android
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Uncertain</th>
+      <th>Negative</th>
+      <th>No Emotion</th>
+      <th>Positive</th>
+    </tr>
+    <tr>
+      <th>Platform</th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>Android</th>
+      <td>0</td>
+      <td>8</td>
+      <td>1</td>
+      <td>69</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+
+```python
+percent_negative_android_tweets = df_android['Negative']/sum(df_android['Positive'],df_android['Negative'])
+```
+
+
+```python
+print("Percentage of tweets targeting Android phones that are negative: {:.3f}".format(percent_negative_android_tweets[0]*100),"%")
+```
+
+    Percentage of tweets targeting Android phones that are negative: 10.390 %
+    
+
+
+```python
+labels1 = 'Negative', 'Positive', 'No Emotion'
+sizes1 = [8, 69, 1]
+```
+
+### Negative Tweets
+
+
+```python
+fig1, ax1 = plt.subplots()
+ax1.pie(sizes1, labels=labels1, autopct='%1.1f%%',
+        shadow=True, startangle=180)
+ax1.axis('equal')  # Equal aspect ratio ensures that pie is drawn as a circle.
+plt.title("Tweets Targeting Androids")
+
+plt.show()
+```
+
+
+    
+![png](Tweet_Analysis_files/Tweet_Analysis_233_0.png)
+    
+
+
+
+```python
+df_iphone
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Uncertain</th>
+      <th>Negative</th>
+      <th>No Emotion</th>
+      <th>Positive</th>
+    </tr>
+    <tr>
+      <th>Platform</th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>iPhone</th>
+      <td>1</td>
+      <td>103</td>
+      <td>9</td>
+      <td>184</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+
+```python
+percent_negative_iphone_tweets = df_iphone['Negative']/sum(df_iphone['Negative'],df_iphone['Positive'])
+```
+
+
+```python
+print("Percentage of tweets targeting iPhones that are negative: {:.3f}".format(percent_negative_iphone_tweets[0]*100),"%")
+```
+
+    Percentage of tweets targeting iPhones that are negative: 35.889 %
+    
+
+
+```python
+sizes2 = [103, 184, 9, 1]
+labels2 = 'Negative', 'Positive', 'No Emotion', 'Uncertain'
+```
+
+
+```python
+fig1, ax1 = plt.subplots()
+ax1.pie(sizes2, labels=labels2, autopct='%1.1f%%',
+        shadow=True, startangle=180)
+ax1.axis('equal')  # Equal aspect ratio ensures that pie is drawn as a circle.
+plt.title("Tweets Targeting iPhones")
+
+plt.show()
+```
+
+
+    
+![png](Tweet_Analysis_files/Tweet_Analysis_238_0.png)
+    
+
+
+### Recommendation
+
+In creating your phone, more users may want the option to have a more customizable user interface which the Android provides. We will need to look into more detail about what negative words users are including in their negative tweets that target iPhones to specifically determine users' complaints.
+
+## Question 2 and Recommendation
+
+### What words are most common in negative tweets about iPhones and Android phones?
+
+### Negative Android Sentiment
+
+
+```python
+# collect all negative tweets for each product
+df_neg_android = df_neg.loc[df_neg['Platform'] =='Android']
+df_neg_iphone = df_neg.loc[df_neg['Platform'] =='iPhone']
+```
+
+
+```python
+df_neg_android = df_neg_android.loc[df_neg_android['Negative'] == 1]
+```
+
+
+```python
+df_neg_android # tweets about Android that are negative - create bag of words Android
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Tweet</th>
+      <th>Platform</th>
+      <th>Emotion</th>
+      <th>Uncertain</th>
+      <th>Negative</th>
+      <th>No Emotion</th>
+      <th>Positive</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>350</th>
+      <td>they took away the lego pit but replaced it wi...</td>
+      <td>Android</td>
+      <td>Negative emotion</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>1940</th>
+      <td>Why does all the #Android meetups here in #Aus...</td>
+      <td>Android</td>
+      <td>Negative emotion</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>1999</th>
+      <td>@mention Android needs a way to group apps lik...</td>
+      <td>Android</td>
+      <td>Negative emotion</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>3389</th>
+      <td>Lunch with @mention at #CNNGrill. View from th...</td>
+      <td>Android</td>
+      <td>Negative emotion</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>4865</th>
+      <td>Excited to meet the @mention at #sxsw so I can...</td>
+      <td>Android</td>
+      <td>Negative emotion</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>8053</th>
+      <td>Spending some time this morning resetting my a...</td>
+      <td>Android</td>
+      <td>Negative emotion</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>8258</th>
+      <td>Is it just me or has the @mention client for A...</td>
+      <td>Android</td>
+      <td>Negative emotion</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>8801</th>
+      <td>Auntie's voxpop of  popular #sxsw apps is wort...</td>
+      <td>Android</td>
+      <td>Negative emotion</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+
+```python
+corpus_android = list(df_neg_android['Tweet'])
+```
+
+
+```python
+corpus_android[:10] # entirety of negative android tweets
+```
+
+
+
+
+    ['they took away the lego pit but replaced it with a recharging station ;) #sxsw and i might check prices for an iphone - crap samsung android',
+     "Why does all the #Android meetups here in #Austin are when I'm at work. Well at least there is the PS meetup #sxsw",
+     '@mention Android needs a way to group apps like you can now do with iPad/iPod. #SXSW #hhrs',
+     'Lunch with @mention at #CNNGrill. View from the HTML5 dev trenches: Android is painful, iOS is sleek (for what @mention is doing) #sxsw',
+     'Excited to meet the @mention at #sxsw so I can show them my Sprint Galaxy S still running Android 2.1.   #fail',
+     'Spending some time this morning resetting my android phone.  First day of #sxsw was too much for it.',
+     'Is it just me or has the @mention client for Android gotten really buggy lately? #SXSW to blame?',
+     "Auntie's voxpop of  popular #sxsw apps is worth a watch: {link} Not many Android phones on view."]
+
+
+
+
+```python
+# tokenize
+android_tokens = word_tokenize(','.join(str(v) for v in corpus_android))
+
+# remove stopwords
+stopped_android_tokens = [word.lower() for word in android_tokens if word.lower() 
+                          not in stopword_list]
+```
+
+
+```python
+freq = FreqDist(stopped_android_tokens)
+```
+
+
+```python
+freq.most_common(25)
+```
+
+
+
+
+    [('android', 8),
+     ('apps', 2),
+     ('view', 2),
+     ('took', 1),
+     ('away', 1),
+     ('lego', 1),
+     ('pit', 1),
+     ('replaced', 1),
+     ('recharging', 1),
+     ('station', 1),
+     ('check', 1),
+     ('prices', 1),
+     ('iphone', 1),
+     ('crap', 1),
+     ('samsung', 1),
+     ('meetups', 1),
+     ('austin', 1),
+     ('work', 1),
+     ('ps', 1),
+     ('meetup', 1),
+     ('needs', 1),
+     ('way', 1),
+     ('group', 1),
+     ('like', 1),
+     ('ipad/ipod', 1)]
+
+
+
+### Negative iPhone Sentiment
+
+
+```python
+df_neg_iphone = df_neg_iphone.loc[df_neg_iphone['Negative'] == 1]
+```
+
+
+```python
+df_neg_iphone # tweets about iphone that are negative - create bag of words iphone
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Tweet</th>
+      <th>Platform</th>
+      <th>Emotion</th>
+      <th>Uncertain</th>
+      <th>Negative</th>
+      <th>No Emotion</th>
+      <th>Positive</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>.@wesley83 I have a 3G iPhone. After 3 hrs twe...</td>
+      <td>iPhone</td>
+      <td>Negative emotion</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>17</th>
+      <td>I just noticed DST is coming this weekend. How...</td>
+      <td>iPhone</td>
+      <td>Negative emotion</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>92</th>
+      <td>What !?!? @mention  #SXSW does not provide iPh...</td>
+      <td>iPhone</td>
+      <td>Negative emotion</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>233</th>
+      <td>If iPhone alarms botch the timechange, how man...</td>
+      <td>iPhone</td>
+      <td>Negative emotion</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>236</th>
+      <td>I meant I also wish I  at #SXSW #dyac stupid i...</td>
+      <td>iPhone</td>
+      <td>Negative emotion</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>8610</th>
+      <td>iPhone battery is going quickly. Guy behind me...</td>
+      <td>iPhone</td>
+      <td>Negative emotion</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>8675</th>
+      <td>We're so ungrateful bc we have too much shit t...</td>
+      <td>iPhone</td>
+      <td>Negative emotion</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>8819</th>
+      <td>Dear #SXSW goer... Please look up from your fu...</td>
+      <td>iPhone</td>
+      <td>Negative emotion</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>8820</th>
+      <td>This #SXSW I am grateful for: my bicycle, havi...</td>
+      <td>iPhone</td>
+      <td>Negative emotion</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>8855</th>
+      <td>If there was a popup store in Austin that sold...</td>
+      <td>iPhone</td>
+      <td>Negative emotion</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+  </tbody>
+</table>
+<p>103 rows × 7 columns</p>
+</div>
+
+
+
+
+```python
+corpus_iphone = list(df_neg_iphone['Tweet'])
+```
+
+
+```python
+corpus_iphone[:15]
+```
+
+
+
+
+    ['.@wesley83 I have a 3G iPhone. After 3 hrs tweeting at #RISE_Austin, it was dead!  I need to upgrade. Plugin stations at #SXSW.',
+     'I just noticed DST is coming this weekend. How many iPhone users will be an hour late at SXSW come Sunday morning? #SXSW #iPhone',
+     "What !?!? @mention  #SXSW does not provide iPhone chargers?!?  I've changed my mind about going next year!",
+     "If iPhone alarms botch the timechange, how many #SXSW'ers freak? Late to flights, missed panels, behind on bloody marys...",
+     'I meant I also wish I  at #SXSW #dyac stupid iPhone!',
+     'Overheard at #sxsw interactive: &quot;Arg! I hate the iphone! I want my blackberry back&quot; #shocked',
+     "overheard at MDW (and I'll second it) &quot;halfway through my iPhone battery already and I haven't even boarded the plane to #sxsw&quot; #amateurhour",
+     "My iPhone battery can't keep up with my tweets! Thanks Apple.  #SXSW  #precommerce",
+     'IPhone is dead. Find me on the secret batphone #sxsw.',
+     'Austin is getting full, and #SXSW is underway.  I can tell because my iPhone is an intermittent brick. #crowded',
+     '.@mention I have a 3G iPhone. After 3 hrs tweeting at #RISE_Austin, it was dead!  I need to upgrade. Plugin stations at #SXSW.',
+     'my iPhone is overheating. why are there so many british sounding people in texas? #SXSW',
+     'My iPhone is wilting under the stress of being at #sxsw.',
+     'iPhone, I know this #SXSW week will be tough on your already-dwindling battery, but so help me Jeebus if you keep correcting my curse words.',
+     "God, it's like being at #sxsw - have iMac, MacBook, iPhone and BlackBerry all staring at me. Enough! Time to read a book - remember those?"]
+
+
+
+
+```python
+# tokenize
+iphone_tokens = word_tokenize(','.join(str(v) for v in corpus_iphone))
+
+# remove stopwords
+stopped_iphone_tokens = [word.lower() for word in iphone_tokens if word.lower() 
+                          not in stopword_list]
+```
+
+
+```python
+freq = FreqDist(stopped_iphone_tokens)
+```
+
+
+```python
+freq.most_common(25)
+```
+
+
+
+
+    [('iphone', 104),
+     ('quot', 22),
+     ('battery', 15),
+     ('amp', 10),
+     ('blackberry', 8),
+     ('link', 8),
+     ('austin', 7),
+     ('app', 7),
+     ('users', 6),
+     ('going', 6),
+     ('time', 6),
+     ('sxsw.', 5),
+     ('like', 5),
+     ('u', 5),
+     ('good', 5),
+     ('3g', 4),
+     ('hour', 4),
+     ('apple', 4),
+     ('people', 4),
+     ('know', 4),
+     ('ipad', 4),
+     ('t-mobile', 4),
+     ('shit', 4),
+     ('long', 4),
+     ('technology', 4)]
+
+
+
+### Recommendation
+
+##### The Android operating system was claimed to be buggy in addition to someone saying Android is painful and not sleek like Apple's iOS. Generally, users had less negative things to say as a percentage of total comments.
+##### The iPhone was said to have failing battery or a battery charge that does not last long enough when the phone is in operation. Additionally, lack of signal became a problem in crowded areas but this is not typically a phone design issue but instead is an infrastructure problem. 
+##### Build a sleek phone with a simple to use Graphical User Interface. Have plenty of battery to power the phone for longer periods. Users would enjoy a feature like a backup battery, or a sleekly designed case that provides a full second charge without adding much volume.
+
+## Question 3 and Recommendation
+
+### What are some of the positive features commented about for both iPhones and Android phones?
+
+
+```python
+df_pos = pd.read_csv('Full_DF')
+```
+
+
+```python
+df_pos_android = df_pos.loc[df_pos['Platform'] =='Android']
+df_pos_iphone = df_pos.loc[df_pos['Platform'] =='iPhone']
+```
+
+
+```python
+df_pos_android = df_pos_android.loc[df_pos_android['Positive']==1]
+df_pos_iphone = df_pos_iphone.loc[df_pos_iphone['Positive']==1]
+```
+
+### Positive Android Sentiment
+
+
+```python
+corpus_android = list(df_pos_android['Tweet'])
+```
+
+
+```python
+corpus_android[:20]
+```
+
+
+
+
+    ['#SXSW is just starting, #CTIA is around the corner and #googleio is only a hop skip and a jump from there, good time to be an #android fan',
+     'Excited to meet the @samsungmobileus at #sxsw so I can show them my Sprint Galaxy S still running Android 2.1.   #fail',
+     'This is a #WINNING picture #android #google #sxsw {link}',
+     "I knew if I plied @mention with beer and stogies last night I'd weasel my way into the Team Android party tonight. #success #SXSW.",
+     'Alert the media.  I just saw the one and only Android tablet at #sxsw.  Like finding a needle in a haystack!  I also saw a Cr-48.',
+     'Farooqui: Now about mobile. iOS, with Android catching up fast and will grow more once they allow in-app purchasing. #gamesfortv #sxsw',
+     'I need to play this game on my #android - #SXSW {link}',
+     'Talked to some great developers at the Android meetup. Looking forward to working with them. #sxsw #android #androidsxsw',
+     "There are thousands of iPad 2's floating around Austin at #sxsw and I have not seen even one single Android tablet.  Not even one. Zero.",
+     'Woot! RT @mention First Android @mention disc {link} ... Market version coming soon! #SXSW',
+     'Heard at #sxsw #Android is now the leading market share of smart phones in US. #getjarsxsw',
+     'Quadroid = Qualcomm + Android just called the platform of the next decade vs Wintel #sxsw #cloud',
+     '{link} via @mention pretty neat database I must say.  does it work on my #android we shall see. #sxsw #party #free',
+     "@mention Android just got a big call out at #sxsw in they #gamelayer opening keynote. I knew you'd appreciate.",
+     'Android party #sxsw (@mention Lustre Pearl Bar w/ 36 others) {link}',
+     '@mention at Team Android party. @mention @mention just walked in. DL Appolicious app &amp; enter to win free Nexus S! #androidsxsw #sxsw',
+     'Piece of awesomeness: Arduino + android = Flaming skulls  {link} @mention @mention #sxsw #smartthings',
+     '@mention Congratulations on winning the Android award! :) #sxsw',
+     '@mention crew ripped up Android party - thanks for having us Droid! {link} #sxsw',
+     'Great UI demo of @mention on @mention {link} #xoom #sxsw #android #tech #tablet']
+
+
+
+
+```python
+# tokenize
+android_tokens = word_tokenize(','.join(str(v) for v in corpus_android))
+
+# remove stopwords
+stopped_android_tokens = [word.lower() for word in android_tokens if word.lower() 
+                          not in stopword_list]
+```
+
+
+```python
+freq = FreqDist(stopped_android_tokens)
+```
+
+
+```python
+freq.most_common(25)
+```
+
+
+
+
+    [('android', 71),
+     ('link', 26),
+     ('party', 12),
+     ('team', 11),
+     ('free', 9),
+     ('lustre', 6),
+     ('pearl', 6),
+     ('amp', 6),
+     ('new', 6),
+     ('phone', 6),
+     ('dev', 5),
+     ('tablet', 4),
+     ('need', 4),
+     ('great', 4),
+     ('meetup', 4),
+     ('androidsxsw', 4),
+     ('market', 4),
+     ('win', 4),
+     ('love', 4),
+     ('details', 4),
+     ('starting', 3),
+     ('good', 3),
+     ('fan', 3),
+     ('excited', 3),
+     ('beer', 3)]
+
+
+
+### Positive iPhone Sentiment
+
+
+```python
+corpus_iphone = list(df_pos_iphone['Tweet'])
+```
+
+
+```python
+corpus_iphone[:20]
+```
+
+
+
+
+    ["I love my @mention iPhone case from #Sxsw but I can't get my phone out of it #fail",
+     'Yai!!! RT @mention New #UberSocial for #iPhone now in the App Store includes UberGuide to #SXSW sponsored by (cont) {link}',
+     'Take that #SXSW ! RT @mention Major South Korean director gets $130,000 to make a movie entirely with his iPhone. {link}',
+     'Behind on 100s of emails? Give them all 1 line iPhone composed replies. #SXSW #protip',
+     'Picked up a Mophie battery case 4 my iPhone in prep for #SXSW. Not lugging around a laptop &amp; only using my phone was a huge win last year.',
+     "Do I need any more for #sxsw! ipad, iphone, laptop, dictaphone, vid.camera.... Wow! Love to  meet the REAL 'cerebellum' charged people:)",
+     'My iPhone battery at 100%. #winning at #SXSW',
+     'BEST SWAG EVER. Thanks @mention My charging iPhone thanks you, too. #SXSW {link}',
+     'Love that I have a MacBook, iPad, and iPhone with me at #sxsw this year. One runs out of juice, and I can jump to the next.',
+     'Holy cow! I just got hooked by Paolo and Alex with a backup charger for my iPhone! facebook.com/powermat #powermatteam #sxsw #thanks',
+     'Holy cow! I just got hooked by Paolo and Alex with a backup charger for my iPhone! facebook.com/powermat #powermattteam #sxsw #thanks',
+     "@mention  I'm beyond frustrated w/ @mention after this Samsung Moment runaround &amp; am leaving for ATT &amp; iPhone so I can enjoy #sxsw.",
+     "Tim Soo's invisible instruments are jaw dropping. iPhone+Wii controller. {link} #lovemusicapi #sxsw",
+     'I fear no iphone + #att 3gs slowpoke network during #sxsw &amp; #sxswmusic.',
+     'Check out iPhone Developer Meet Up at SXSW.\n{link} #SXSW',
+     "&quot;the iPhone is a transient device used in short bursts; the iPad is an 'after 8pm, on the couch' device.&quot; @mention #sxsw",
+     '@mention  iPhone. Clearly. Positively. Happily. #SXSW',
+     'Flipboard is developing an iPhone version, not Android, says @mention #sxsw',
+     "So {link} is part of my presentation at #SXSW so good thing it's crashing now instead of then. Works best on iPhone/Android",
+     'Loving my Morphie JuicePack today for a recharge of iPhone. So worth it. #sxsw']
+
+
+
+
+```python
+# tokenize
+iphone_tokens = word_tokenize(','.join(str(v) for v in corpus_iphone))
+
+# remove stopwords
+stopped_iphone_tokens = [word.lower() for word in iphone_tokens if word.lower() 
+                          not in stopword_list]
+```
+
+
+```python
+freq = FreqDist(stopped_iphone_tokens)
+```
+
+
+```python
+freq.most_common(25)
+```
+
+
+
+
+    [('iphone', 176),
+     ('link', 53),
+     ('ipad', 17),
+     ('quot', 16),
+     ('amp', 15),
+     ('got', 14),
+     ('new', 13),
+     ('love', 11),
+     ('thanks', 9),
+     ('free', 9),
+     ('case', 8),
+     ('battery', 8),
+     ('charger', 8),
+     ('zazzlesxsw', 8),
+     ('like', 8),
+     ('phone', 7),
+     ('charging', 7),
+     ('w/', 7),
+     ('android', 7),
+     ('austin', 7),
+     ('sxswi', 7),
+     ('use', 7),
+     ('wow', 6),
+     ('best', 6),
+     ('year', 6)]
+
+
+
+### Recommendation
+
+##### People are happiest when their phones are charged or charging. 
+##### The positive Android Tweets are in reference to parties or people just being excited about Android phones and challenging Apple's market share. Words used include party, team, good, win, market, fan, and excited. Individual observations are not about the function of the device but rather about being a part of a new group or trend. 
+##### The positive iPhone tweets center on batteries and charging/having a charged phone to be able to use at the music festival in Austin, Texas. Words most often used include case, thanks, free, charger, wow, and best. These observations are more about being able to use iPhone to do anything, including getting funding of $130,000 in order to make a movie with only the camera on an iPhone. 
 
 
 ```python
