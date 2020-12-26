@@ -1,6 +1,6 @@
 # Twitter Sentiment Analysis
 
-<img src= "https://www.google.com/imgres?imgurl=https%3A%2F%2Fmedia1.tenor.com%2Fimages%2F33648fbac649468552f205e7f2d218da%2Ftenor.gif%3Fitemid%3D9681512&imgrefurl=https%3A%2F%2Ftenor.com%2Fview%2Ftwitter-ahs-gif-9681512&tbnid=VTD-6qA1-O_yAM&vet=12ahUKEwjpj-bUqeztAhUHIa0KHWKtBScQMygEegUIARDVAQ..i&docid=m1rXvGwaaHlJhM&w=498&h=230&q=gif%20about%20tweeting&ved=2ahUKEwjpj-bUqeztAhUHIa0KHWKtBScQMygEegUIARDVAQ" />
+<img src="https://www.google.com/imgres?imgurl=https%3A%2F%2Fmedia1.tenor.com%2Fimages%2F33648fbac649468552f205e7f2d218da%2Ftenor.gif%3Fitemid%3D9681512&imgrefurl=https%3A%2F%2Ftenor.com%2Fview%2Ftwitter-ahs-gif-9681512&tbnid=VTD-6qA1-O_yAM&vet=12ahUKEwjpj-bUqeztAhUHIa0KHWKtBScQMygEegUIARDVAQ..i&docid=m1rXvGwaaHlJhM&w=498&h=230&q=gif%20about%20tweeting&ved=2ahUKEwjpj-bUqeztAhUHIa0KHWKtBScQMygEegUIARDVAQ" width="800" />
 
 ##### [Slideshow PDF](pdfs/TrafficCollisionsChicago.pdf)
 ##### [Video Walkthrough]
@@ -36,11 +36,11 @@ The tweets have been tokenized and lemmatized. Both a multiclass classifier and 
 
 Binary Classifier Using RandomForest and Tf-Idf Vectorizer
 #### 1 Denotes a positively charged tweet, 0 denotes a negatively charged tweet
-![svg](Tweet_Analysis_Files/Tweet_Analysis_100_1.png)
+![svg](Tweet_Analysis_files/Tweet_Analysis_100_1.png)
 
 Multiclass Classifier Keras Neural Network
 #### Validating Model Accuracy
-![svg](Tweet_Analysis_Files/Tweet_Analysis_151_0.png)
+![svg](Tweet_Analysis_files/Tweet_Analysis_151_0.png)
 
 ## Main Questions
 * Question 1: In tweets targeting either the iPhone or Android phones, which product is more often the subject of negatively charged emotions?
@@ -64,8 +64,8 @@ Multiclass Classifier Keras Neural Network
 
 ### Proportion of Negative and Positive Tweets
 #### As a proportion of totals, iPhones receive more negative attention from Tweeters
-![svg](Tweet_Analysis_Files/Tweet_Analysis_233_0.png)
-![svg](Tweet_Analysis_Files/Tweet_Analysis_238_0.png)
+![svg](Tweet_Analysis_files/Tweet_Analysis_233_0.png)
+![svg](Tweet_Analysis_files/Tweet_Analysis_238_0.png)
 
 * Question 2 Answer: 
 * The Android operating system was claimed to be buggy in addition to someone saying Android is painful and not sleek like Apple's iOS. Generally, users had less negative things to say as a percentage of total comments.
