@@ -1,6 +1,6 @@
 # Twitter Sentiment Analysis
 
-<img src="https://hips.hearstapps.com/esquireuk.cdnds.net/16/46/1479206864-donald-trump-wrong.gif?fill=480:287&resize=768:*" width="800"/>
+<img src= "https://www.google.com/imgres?imgurl=https%3A%2F%2Fmedia1.tenor.com%2Fimages%2F33648fbac649468552f205e7f2d218da%2Ftenor.gif%3Fitemid%3D9681512&imgrefurl=https%3A%2F%2Ftenor.com%2Fview%2Ftwitter-ahs-gif-9681512&tbnid=VTD-6qA1-O_yAM&vet=12ahUKEwjpj-bUqeztAhUHIa0KHWKtBScQMygEegUIARDVAQ..i&docid=m1rXvGwaaHlJhM&w=498&h=230&q=gif%20about%20tweeting&ved=2ahUKEwjpj-bUqeztAhUHIa0KHWKtBScQMygEegUIARDVAQ" />
 
 ##### [Slideshow PDF](pdfs/TrafficCollisionsChicago.pdf)
 ##### [Video Walkthrough]
@@ -14,7 +14,11 @@
 
 ## Purpose
 
-#### 
+#### A client is looking to design and manufacture a new smart phone and will invariably compete with Apple and Google products. They have provided us with a data set of Tweets and would like more detail regarding negatively and positively charged Tweets directed at both iPhone OS and Android OS phones. 
+##### Our challenges are -
+##### * 1. To highlight any negative features of iPhones and Androids so that they can reduce them in their new product and 
+##### * 2. To highlight positive features of iPhones and Androids so that they can implement or improve them in their own product
+##### * 3. To provide recommendations that will improve their future product
 
 ## Tweet Content
 
@@ -24,36 +28,54 @@ The tweets in the data are focused on Apple and Google products. The Apple and G
 
 The data consists of 3 original columns - Tweets, Subject of the Tweet, and the primary Emotion of the Tweet
 
+## EDA and Preprocessing 
+
+The tweets have been tokenized and lemmatized. Both a multiclass classifier and a binary classifier were built to predict the sentiment of a particular tweet.
+
+## Supervised Learning Models 
+
+Binary Classifier Using RandomForest and Tf-Idf Vectorizer
+#### 1 Denotes a positively charged tweet, 0 denotes a negatively charged tweet
+![svg](Tweet_Analysis_Files/Tweet_Analysis_100_1.png)
+
+Multiclass Classifier Keras Neural Network
+#### Validating Model Accuracy
+![svg](Tweet_Analysis_Files/Tweet_Analysis_151_0.png)
+
 ## Main Questions
-* Question 1: 
-* Question 2: 
-* Question 3: 
+* Question 1: In tweets targeting either the iPhone or Android phones, which product is more often the subject of negatively charged emotions?
+* Question 2: What words are most common in negative tweets about iPhones and Android phones?
+* Question 3: What are some of the positive features commented about for both iPhones and Android phones?
+
+## Notebook Table of Contents
+### 1.1 Introduction
+### 1.2 Table of Contents
+### 1.3 EDA and Data Preprocessing
+### 1.4 Modeling
+### 1.5 Evaluate Models
+### 1.6 Keras NN Binary
+### 1.7 NLP Using Word2Vec
+### 1.8 Keras NN Multiclass
+### 1.9 - 1.11 Questions 1-3
 
 ## Summary Conclusions and Insights
 * Question 1 Answer: 
-*
+* In creating a new phone product, keep in mind that users may want the option to have a more customizable user interface which the Android OS provides. We will need to look into more detail about what negative words users are including in their negative tweets that target iPhones to specifically determine users' complaints. 
 
-
-
-* 
-
-![svg](img/Question1_8_0.png)
+### Proportion of Negative and Positive Tweets
+#### As a proportion of totals, iPhones receive more negative attention from Tweeters
+![svg](Tweet_Analysis_Files/Tweet_Analysis_233_0.png)
+![svg](Tweet_Analysis_Files/Tweet_Analysis_238_0.png)
 
 * Question 2 Answer: 
-
-![svg](img/Question2_4_0.png)
-
-![svg](img/Question2_5_0.png)
-
-*  
-
-![svg](img/Question2_7_0.png)
+* The Android operating system was claimed to be buggy in addition to someone saying Android is painful and not sleek like Apple's iOS. Generally, users had less negative things to say as a percentage of total comments.
+The iPhone was said to have failing battery or a battery charge that does not last long enough when the phone is in operation. Additionally, lack of signal became a problem in crowded areas but this is not typically a phone design issue but instead is an infrastructure problem.
+Build a sleek phone with a simple to use Graphical User Interface. Have plenty of battery to power the phone for longer periods. Users would enjoy a feature like a backup battery, or a sleekly designed case that provides a full second charge without adding much volume.
 
 * Question 3 Answer: 
-
-![svg](img/Question3_5_0.png) 
-
-
+* People are happiest when their phones are charged or charging.
+The positive Android Tweets are in reference to parties or people just being excited about Android phones and challenging Apple's market share. Words used include party, team, good, win, market, fan, and excited. Individual observations are not about the function of the device but rather about being a part of a new group or trend.
+The positive iPhone tweets center on batteries and charging/having a charged phone to be able to use at the music festival in Austin, Texas. Words most often used include case, thanks, free, charger, wow, and best. These observations are more about being able to use iPhone to do anything, including getting funding of $130,000 in order to make a movie with only the camera on an iPhone.
 
 
 ## Future Work
