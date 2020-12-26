@@ -5,7 +5,6 @@
 ![svg](img/tenor.gif)
 
 ##### [Slideshow PDF](pdfs/TrafficCollisionsChicago.pdf)
-##### [Video Walkthrough]
 
 ### Outline
 * [Purpose](#Purpose)
