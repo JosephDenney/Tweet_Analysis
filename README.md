@@ -35,11 +35,11 @@ The tweets have been tokenized and lemmatized. Both a multiclass classifier and 
 
 ## Supervised Learning Models 
 
-Binary Classifier Using RandomForest and Tf-Idf Vectorizer
+### Binary Classifier Using RandomForest and Tf-Idf Vectorizer
 #### 1 Denotes a positively charged tweet, 0 denotes a negatively charged tweet
 ![svg](Tweet_Analysis_files/Tweet_Analysis_100_1.png)
 
-Multiclass Classifier Keras Neural Network
+### Multiclass Classifier Keras Neural Network
 #### Validating Model Accuracy
 ![svg](Tweet_Analysis_files/Tweet_Analysis_151_0.png)
 
