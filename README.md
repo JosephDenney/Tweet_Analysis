@@ -14,11 +14,11 @@
 
 ## Purpose
 
-#### The goal of this project is to be able to classify a given tweet as either positive or negative using a model trained on a collected tweet dataset. 
+#### 
 
 ## Tweet Content
 
-The tweets in the data are mainly focused on Apple and Google products.
+The tweets in the data are focused on Apple and Google products. The Apple and Google product related tweets all mention SXSW (South by Southwest), a music festival in Austin, Texas.  
 
 ## Description of Data
 
