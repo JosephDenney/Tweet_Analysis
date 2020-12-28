@@ -1,10 +1,8 @@
 # Twitter Sentiment Analysis
 
-<img src="https://www.google.com/imgres?imgurl=https%3A%2F%2Fmedia1.tenor.com%2Fimages%2F33648fbac649468552f205e7f2d218da%2Ftenor.gif%3Fitemid%3D9681512&imgrefurl=https%3A%2F%2Ftenor.com%2Fview%2Ftwitter-ahs-gif-9681512&tbnid=VTD-6qA1-O_yAM&vet=12ahUKEwjpj-bUqeztAhUHIa0KHWKtBScQMygEegUIARDVAQ..i&docid=m1rXvGwaaHlJhM&w=498&h=230&q=gif%20about%20tweeting&ved=2ahUKEwjpj-bUqeztAhUHIa0KHWKtBScQMygEegUIARDVAQ" width="800" />
-
 ![svg](img/tenor.gif)
 
-##### [Slideshow PDF](pdfs/TrafficCollisionsChicago.pdf)
+##### [Slideshow PDF](pdfs/Tweet_Sentiment_Analysis.pdf)
 
 ### Outline
 * [Purpose](#Purpose)
