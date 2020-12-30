@@ -92,6 +92,43 @@ from keras.preprocessing import text, sequence
 
 
 ```python
+pattern = r"\@\w*"
+```
+
+
+```python
+# regex has a cool function called search
+mysearch = re.search(pattern, df['Tweet'][0])
+mysearch
+```
+
+
+
+
+    <re.Match object; span=(1, 10), match='@wesley83'>
+
+
+
+
+```python
+myfind = re.findall(pattern, df['Tweet'][0])
+myfind
+```
+
+
+
+
+    ['@wesley83']
+
+
+
+
+```python
+
+```
+
+
+```python
 nlp = spacy.load("en_core_web_sm")
 ```
 
@@ -102,8 +139,8 @@ print(nlp.Defaults.stop_words)
 # view list of stopwords
 ```
 
-    <WordListCorpusReader in 'C:\\Users\\josep\\AppData\\Roaming\\nltk_data\\corpora\\stopwords'>
-    {'forty', 'thereupon', 'hundred', 'sometime', 'whither', 'yet', 'its', 'nine', 'wherein', 'hence', 'whatever', 'then', '‘s', 'not', 'same', 'of', 'mostly', '’d', 'still', 'last', 'four', 'her', 'towards', 're', 'just', 'is', 'out', 'fifteen', 'becomes', '‘ve', 'we', 'somehow', 'his', 'get', 'thereby', 'at', 'in', 'serious', 'sometimes', 'beyond', 'please', 'another', 'who', 'ourselves', '‘d', 'mine', 'part', 'him', 'somewhere', 'per', 'move', 'therefore', 'our', '‘m', 'whom', "'ve", 'over', 'else', 'indeed', 'regarding', 'namely', 'from', 'whose', 'an', 'whence', 'ever', 'why', 'if', 'under', 'will', 'much', 'latterly', 'down', '’re', 'it', 'whereupon', 'other', 'five', 'show', 'are', 'there', 'also', 'which', 'and', 'many', 'them', 'or', 'well', 'most', 'about', 'was', 'former', 'should', 'always', 'thru', 'both', 'might', 'but', 'someone', 'unless', 'whether', 'up', 'hers', 'eight', 'had', 'you', 'onto', 'hereby', 'besides', 'some', 'again', 'does', 'various', 'nor', 'none', 'back', 'using', 'quite', 'ten', 'has', "'s", 'above', 'here', 'everywhere', 'bottom', 'cannot', 'yourselves', 'been', 'own', 'seem', 'too', 'formerly', 'must', 'through', 'used', 'often', 'least', 'now', 'since', 'so', 'anything', 'seems', 'yours', 'itself', 'six', 'twenty', '’m', 'around', 'however', 'full', 'he', 'do', 'third', 'toward', 'thence', 'to', 'amount', 'enough', 'all', 'hereupon', 'i', 'herein', 'those', 'three', 'n‘t', 'either', 'alone', 'us', 'less', 'between', 'behind', 'ca', 'nowhere', 'every', 'others', 'these', 'could', 'seeming', 'doing', 'due', 'no', 'therein', 'side', 'only', 'though', 'nevertheless', 'really', 'each', 'thus', 'hereafter', 'the', 'whole', 'although', 'whereby', 'became', 'beside', 'via', 'am', 'further', 'when', '’ve', 'may', 'across', 'seemed', 'front', "'ll", 'for', 'can', 'me', 'almost', 'were', 'give', 'together', 'rather', 'would', 'perhaps', 'several', "'m", 'neither', 'made', 'whereafter', 'fifty', 'two', 'than', 'put', 'as', 'being', 'wherever', 'such', 'everything', 'n’t', 'herself', 'elsewhere', 'yourself', 'meanwhile', 'by', 'off', "n't", 'even', 'during', 'before', 'how', 'their', 'amongst', 'whenever', 'once', 'make', 'nobody', 'because', 'beforehand', 'himself', 'anywhere', 'latter', 'never', 'your', 'say', 'go', 'anyhow', 'among', 'with', 'until', 'otherwise', 'take', 'that', "'re", 'while', '’s', 'become', 'where', 'did', 'everyone', 'sixty', 'keep', 'name', 'any', 'whoever', 'done', 'along', 'anyway', 'moreover', 'into', 'whereas', 'be', '‘ll', 'noone', 'few', 'on', 'see', 'call', 'top', 'ours', 'one', 'empty', 'what', 'anyone', 'she', 'against', 'twelve', 'already', 'eleven', '’ll', 'below', 'next', 'afterwards', 'my', 'except', 'thereafter', 'after', 'this', "'d", 'first', '‘re', 'more', 'something', 'becoming', 'throughout', 'very', 'within', 'upon', 'nothing', 'a', 'themselves', 'myself', 'without', 'they', 'have'}
+    <WordListCorpusReader in '.../corpora/stopwords' (not loaded yet)>
+    {'’d', 'since', 'thru', 'everywhere', 'within', 'forty', 'four', '‘ll', 'various', 'all', 'own', 'same', 'your', 'this', 'two', 'perhaps', 'indeed', 'against', 'regarding', 'before', 'more', 'yours', 'made', 'an', 'again', 'am', 'by', 'beforehand', 'make', 'than', 'yourself', 'third', 'is', 'often', 'there', 'empty', 'you', 'another', 'have', "'m", 'n’t', 'out', 'somehow', 'whence', 'either', 'after', 'anyone', 'back', 'due', 'onto', 'next', 'can', 'would', 'which', 'used', 'nine', 'whom', 'beyond', 'becomes', 'no', 'whose', 'unless', 'latterly', 'namely', 'while', 'whenever', 'in', 'between', 'done', 'last', 'least', 'up', 'over', 'say', 'were', 'below', 'alone', 'both', 'seeming', 'upon', 'wherein', '‘m', 'then', 'sixty', 'hereafter', "'s", 'nowhere', 'first', 'themselves', 'something', 'and', 'yourselves', '‘re', 'whether', 'do', 'off', 'full', 'did', 'many', '‘s', 'already', 'how', 'seem', 'along', 'until', 'around', 'yet', 'ca', 'it', 'whereas', 'being', 'take', 'what', 'their', "n't", 'ours', 'does', 'give', 'everyone', 'them', 'front', 'top', 'cannot', 'whoever', 'above', 'my', 'are', 'that', 'quite', 'seemed', 'he', 'sometime', 'well', '‘ve', 'really', 'each', 'among', 'will', 'should', 'wherever', 'they', 'towards', '’ll', 'when', 'whereupon', 'still', 'afterwards', "'re", 'nobody', 'become', 'few', 'these', 'fifty', 'elsewhere', 'per', '’re', 'further', 'must', 'be', 'myself', 'anything', 'neither', 'mine', 'other', 'amount', 'n‘t', 'very', 'rather', 'mostly', 'anywhere', 'if', '’ve', 'meanwhile', 'ourselves', 'throughout', 'not', 'move', 'doing', 'too', 'bottom', 'even', 'who', 'otherwise', 'down', 'however', 'sometimes', 'therein', 'beside', 'anyhow', 'but', 'becoming', 'without', 'latter', 'except', 'part', 'fifteen', 'our', 'almost', 'the', 'now', 'call', '’m', 'became', 'for', 'get', 'thence', 'thereupon', 'him', 'moreover', 'hence', 'hereby', 'besides', 'eleven', 'hers', 'where', 'has', 'although', 'noone', 'most', 'three', 'whereafter', 'serious', "'ve", 'eight', 'name', 'every', 'of', 'nothing', 'into', 'amongst', 'somewhere', 'also', 'those', 'twelve', 'please', 'one', 'ten', 'else', 'as', 'hereupon', 'whole', 'a', 'thus', 'her', 'behind', 'about', 'therefore', 'across', 'nor', 'others', 'us', 'much', 'using', 'several', 'i', 'former', 'go', 'herein', 'on', 'been', 'hundred', 'or', 'five', 'toward', 'his', 'only', 'to', 'always', 'such', 'herself', 'once', 'see', "'ll", 'here', 'was', 'she', 'just', 'never', 'any', 'together', 'during', 'whither', 'so', 'whereby', 'nevertheless', 'thereafter', 'at', 'with', 'though', 'had', 'anyway', 'none', 'six', 'from', 'someone', 'because', 'twenty', 'itself', "'d", 'show', 'thereby', 'me', 'whatever', 'under', 'we', 'why', 'ever', 'seems', 'some', 'through', 'keep', 'himself', '‘d', 'could', 'less', 'enough', 'put', 'may', 'everything', 'side', 're', 'its', 'might', 'via', '’s', 'formerly'}
     
 
 
@@ -830,332 +867,332 @@ stopword_list
 
 
 
-    ['forty',
-     'thereupon',
-     'hundred',
-     'sometime',
-     'whither',
-     'yet',
-     'its',
-     'nine',
-     'wherein',
-     'hence',
-     'whatever',
-     'then',
-     '‘s',
-     'not',
-     'same',
-     'of',
-     'mostly',
-     '’d',
-     'still',
-     'last',
-     'four',
-     'her',
-     'towards',
-     're',
-     'just',
-     'is',
-     'out',
-     'fifteen',
-     'becomes',
-     '‘ve',
-     'we',
-     'somehow',
-     'his',
-     'get',
-     'thereby',
-     'at',
-     'in',
-     'serious',
-     'sometimes',
-     'beyond',
-     'please',
-     'another',
-     'who',
-     'ourselves',
-     '‘d',
-     'mine',
-     'part',
-     'him',
-     'somewhere',
-     'per',
-     'move',
-     'therefore',
-     'our',
-     '‘m',
-     'whom',
-     "'ve",
-     'over',
-     'else',
-     'indeed',
-     'regarding',
-     'namely',
-     'from',
-     'whose',
-     'an',
-     'whence',
-     'ever',
-     'why',
-     'if',
-     'under',
-     'will',
-     'much',
-     'latterly',
-     'down',
-     '’re',
-     'it',
-     'whereupon',
-     'other',
-     'five',
-     'show',
-     'are',
-     'there',
-     'also',
-     'which',
-     'and',
-     'many',
-     'them',
-     'or',
-     'well',
-     'most',
-     'about',
-     'was',
-     'former',
-     'should',
-     'always',
-     'thru',
-     'both',
-     'might',
-     'but',
-     'someone',
-     'unless',
-     'whether',
-     'up',
-     'hers',
-     'eight',
-     'had',
-     'you',
-     'onto',
-     'hereby',
-     'besides',
-     'some',
-     'again',
-     'does',
-     'various',
-     'nor',
-     'none',
-     'back',
-     'using',
-     'quite',
-     'ten',
-     'has',
-     "'s",
-     'above',
-     'here',
-     'everywhere',
-     'bottom',
-     'cannot',
-     'yourselves',
-     'been',
-     'own',
-     'seem',
-     'too',
-     'formerly',
-     'must',
-     'through',
-     'used',
-     'often',
-     'least',
-     'now',
+    ['’d',
      'since',
-     'so',
-     'anything',
-     'seems',
-     'yours',
-     'itself',
-     'six',
-     'twenty',
-     '’m',
-     'around',
-     'however',
-     'full',
-     'he',
-     'do',
-     'third',
-     'toward',
-     'thence',
-     'to',
-     'amount',
-     'enough',
+     'thru',
+     'everywhere',
+     'within',
+     'forty',
+     'four',
+     '‘ll',
+     'various',
      'all',
-     'hereupon',
-     'i',
-     'herein',
-     'those',
-     'three',
-     'n‘t',
+     'own',
+     'same',
+     'your',
+     'this',
+     'two',
+     'perhaps',
+     'indeed',
+     'against',
+     'regarding',
+     'before',
+     'more',
+     'yours',
+     'made',
+     'an',
+     'again',
+     'am',
+     'by',
+     'beforehand',
+     'make',
+     'than',
+     'yourself',
+     'third',
+     'is',
+     'often',
+     'there',
+     'empty',
+     'you',
+     'another',
+     'have',
+     "'m",
+     'n’t',
+     'out',
+     'somehow',
+     'whence',
      'either',
-     'alone',
-     'us',
-     'less',
-     'between',
-     'behind',
-     'ca',
-     'nowhere',
-     'every',
-     'others',
-     'these',
-     'could',
-     'seeming',
-     'doing',
+     'after',
+     'anyone',
+     'back',
      'due',
+     'onto',
+     'next',
+     'can',
+     'would',
+     'which',
+     'used',
+     'nine',
+     'whom',
+     'beyond',
+     'becomes',
      'no',
-     'therein',
-     'side',
-     'only',
-     'though',
-     'nevertheless',
+     'whose',
+     'unless',
+     'latterly',
+     'namely',
+     'while',
+     'whenever',
+     'in',
+     'between',
+     'done',
+     'last',
+     'least',
+     'up',
+     'over',
+     'say',
+     'were',
+     'below',
+     'alone',
+     'both',
+     'seeming',
+     'upon',
+     'wherein',
+     '‘m',
+     'then',
+     'sixty',
+     'hereafter',
+     "'s",
+     'nowhere',
+     'first',
+     'themselves',
+     'something',
+     'and',
+     'yourselves',
+     '‘re',
+     'whether',
+     'do',
+     'off',
+     'full',
+     'did',
+     'many',
+     '‘s',
+     'already',
+     'how',
+     'seem',
+     'along',
+     'until',
+     'around',
+     'yet',
+     'ca',
+     'it',
+     'whereas',
+     'being',
+     'take',
+     'what',
+     'their',
+     "n't",
+     'ours',
+     'does',
+     'give',
+     'everyone',
+     'them',
+     'front',
+     'top',
+     'cannot',
+     'whoever',
+     'above',
+     'my',
+     'are',
+     'that',
+     'quite',
+     'seemed',
+     'he',
+     'sometime',
+     'well',
+     '‘ve',
      'really',
      'each',
-     'thus',
-     'hereafter',
-     'the',
-     'whole',
-     'although',
-     'whereby',
-     'became',
-     'beside',
-     'via',
-     'am',
-     'further',
-     'when',
-     '’ve',
-     'may',
-     'across',
-     'seemed',
-     'front',
-     "'ll",
-     'for',
-     'can',
-     'me',
-     'almost',
-     'were',
-     'give',
-     'together',
-     'rather',
-     'would',
-     'perhaps',
-     'several',
-     "'m",
-     'neither',
-     'made',
-     'whereafter',
-     'fifty',
-     'two',
-     'than',
-     'put',
-     'as',
-     'being',
-     'wherever',
-     'such',
-     'everything',
-     'n’t',
-     'herself',
-     'elsewhere',
-     'yourself',
-     'meanwhile',
-     'by',
-     'off',
-     "n't",
-     'even',
-     'during',
-     'before',
-     'how',
-     'their',
-     'amongst',
-     'whenever',
-     'once',
-     'make',
-     'nobody',
-     'because',
-     'beforehand',
-     'himself',
-     'anywhere',
-     'latter',
-     'never',
-     'your',
-     'say',
-     'go',
-     'anyhow',
      'among',
-     'with',
-     'until',
-     'otherwise',
-     'take',
-     'that',
-     "'re",
-     'while',
-     '’s',
-     'become',
-     'where',
-     'did',
-     'everyone',
-     'sixty',
-     'keep',
-     'name',
-     'any',
-     'whoever',
-     'done',
-     'along',
-     'anyway',
-     'moreover',
-     'into',
-     'whereas',
-     'be',
-     '‘ll',
-     'noone',
-     'few',
-     'on',
-     'see',
-     'call',
-     'top',
-     'ours',
-     'one',
-     'empty',
-     'what',
-     'anyone',
-     'she',
-     'against',
-     'twelve',
-     'already',
-     'eleven',
-     '’ll',
-     'below',
-     'next',
-     'afterwards',
-     'my',
-     'except',
-     'thereafter',
-     'after',
-     'this',
-     "'d",
-     'first',
-     '‘re',
-     'more',
-     'something',
-     'becoming',
-     'throughout',
-     'very',
-     'within',
-     'upon',
-     'nothing',
-     'a',
-     'themselves',
-     'myself',
-     'without',
+     'will',
+     'should',
+     'wherever',
      'they',
-     'have']
+     'towards',
+     '’ll',
+     'when',
+     'whereupon',
+     'still',
+     'afterwards',
+     "'re",
+     'nobody',
+     'become',
+     'few',
+     'these',
+     'fifty',
+     'elsewhere',
+     'per',
+     '’re',
+     'further',
+     'must',
+     'be',
+     'myself',
+     'anything',
+     'neither',
+     'mine',
+     'other',
+     'amount',
+     'n‘t',
+     'very',
+     'rather',
+     'mostly',
+     'anywhere',
+     'if',
+     '’ve',
+     'meanwhile',
+     'ourselves',
+     'throughout',
+     'not',
+     'move',
+     'doing',
+     'too',
+     'bottom',
+     'even',
+     'who',
+     'otherwise',
+     'down',
+     'however',
+     'sometimes',
+     'therein',
+     'beside',
+     'anyhow',
+     'but',
+     'becoming',
+     'without',
+     'latter',
+     'except',
+     'part',
+     'fifteen',
+     'our',
+     'almost',
+     'the',
+     'now',
+     'call',
+     '’m',
+     'became',
+     'for',
+     'get',
+     'thence',
+     'thereupon',
+     'him',
+     'moreover',
+     'hence',
+     'hereby',
+     'besides',
+     'eleven',
+     'hers',
+     'where',
+     'has',
+     'although',
+     'noone',
+     'most',
+     'three',
+     'whereafter',
+     'serious',
+     "'ve",
+     'eight',
+     'name',
+     'every',
+     'of',
+     'nothing',
+     'into',
+     'amongst',
+     'somewhere',
+     'also',
+     'those',
+     'twelve',
+     'please',
+     'one',
+     'ten',
+     'else',
+     'as',
+     'hereupon',
+     'whole',
+     'a',
+     'thus',
+     'her',
+     'behind',
+     'about',
+     'therefore',
+     'across',
+     'nor',
+     'others',
+     'us',
+     'much',
+     'using',
+     'several',
+     'i',
+     'former',
+     'go',
+     'herein',
+     'on',
+     'been',
+     'hundred',
+     'or',
+     'five',
+     'toward',
+     'his',
+     'only',
+     'to',
+     'always',
+     'such',
+     'herself',
+     'once',
+     'see',
+     "'ll",
+     'here',
+     'was',
+     'she',
+     'just',
+     'never',
+     'any',
+     'together',
+     'during',
+     'whither',
+     'so',
+     'whereby',
+     'nevertheless',
+     'thereafter',
+     'at',
+     'with',
+     'though',
+     'had',
+     'anyway',
+     'none',
+     'six',
+     'from',
+     'someone',
+     'because',
+     'twenty',
+     'itself',
+     "'d",
+     'show',
+     'thereby',
+     'me',
+     'whatever',
+     'under',
+     'we',
+     'why',
+     'ever',
+     'seems',
+     'some',
+     'through',
+     'keep',
+     'himself',
+     '‘d',
+     'could',
+     'less',
+     'enough',
+     'put',
+     'may',
+     'everything',
+     'side',
+     're',
+     'its',
+     'might',
+     'via',
+     '’s',
+     'formerly']
 
 
 
@@ -1288,6 +1325,18 @@ additional_misc = ['sxsw','mention',r'[a-zA-Z]+\'?s]',
                    r'^http[s]?','za'] #[A-Z]{2,20} remove caps like MAGA and CDT
 stopword_list.extend(additional_misc)
 stopword_list.extend(['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'])
+```
+
+
+```python
+additional_misc = [r'\@\w*']
+stopword_list.extend(additional_misc)
+stopword_list.extend(['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'])
+```
+
+
+```python
+
 ```
 
 
@@ -1533,7 +1582,7 @@ plt.show()
 
 
     
-![png](Tweet_Analysis_files/Tweet_Analysis_59_0.png)
+![png](Tweet_Analysis_files/Tweet_Analysis_65_0.png)
     
 
 
@@ -1698,7 +1747,7 @@ plt.show()
 
 
     
-![png](Tweet_Analysis_files/Tweet_Analysis_62_0.png)
+![png](Tweet_Analysis_files/Tweet_Analysis_68_0.png)
     
 
 
@@ -1982,7 +2031,7 @@ y_train.value_counts(0)
 y_test.value_counts(1)
 ```
 
-    2020-12-23 10:29:17,902 : INFO : NumExpr defaulting to 8 threads.
+    2020-12-30 10:37:01,139 : INFO : NumExpr defaulting to 8 threads.
     
 
 
@@ -1994,7 +2043,7 @@ y_test.value_counts(1)
 
 
 
-### Vectorize, Lemmatize with Count Vectorizer and Tf Idf
+### Vectorize and Tokenize with Count Vectorizer and Tf Idf
 
 
 ```python
@@ -2076,18 +2125,18 @@ evaluate_model(y_test, y_hat_test, X_test_count,clf=model)
 
                   precision    recall  f1-score   support
     
-               0       0.97      0.84      0.90       277
+               0       0.97      0.83      0.89       277
                1       0.93      0.99      0.96       598
     
         accuracy                           0.94       875
-       macro avg       0.95      0.91      0.93       875
+       macro avg       0.95      0.91      0.92       875
     weighted avg       0.94      0.94      0.94       875
     
     
 
 
     
-![png](Tweet_Analysis_files/Tweet_Analysis_92_1.png)
+![png](Tweet_Analysis_files/Tweet_Analysis_98_1.png)
     
 
 
@@ -2141,18 +2190,18 @@ evaluate_model(y_test, y_hat_tf_idf, X_test_tf_idf,clf=model_tf_idf)
 
                   precision    recall  f1-score   support
     
-               0       0.91      0.64      0.75       277
-               1       0.85      0.97      0.91       598
+               0       0.91      0.61      0.73       277
+               1       0.84      0.97      0.90       598
     
-        accuracy                           0.87       875
-       macro avg       0.88      0.81      0.83       875
-    weighted avg       0.87      0.87      0.86       875
+        accuracy                           0.86       875
+       macro avg       0.88      0.79      0.82       875
+    weighted avg       0.87      0.86      0.85       875
     
     
 
 
     
-![png](Tweet_Analysis_files/Tweet_Analysis_100_1.png)
+![png](Tweet_Analysis_files/Tweet_Analysis_106_1.png)
     
 
 
@@ -2170,16 +2219,16 @@ for model in models:
     single_model_opt(model, X_train_count, y_train, X_test_count, y_test)
 ```
 
-    Accuracy Score:  0.9314285714285714
-    Precision Score:  0.9177018633540373
-    Recall Score:  0.9882943143812709
-    F1 Score:  0.9516908212560387
-    RandomForestClassifier()   0.9314285714285714
+    Accuracy Score:  0.936
+    Precision Score:  0.9221183800623053
+    Recall Score:  0.9899665551839465
+    F1 Score:  0.9548387096774194
+    RandomForestClassifier()   0.936
     
 
 
     
-![png](Tweet_Analysis_files/Tweet_Analysis_102_1.png)
+![png](Tweet_Analysis_files/Tweet_Analysis_108_1.png)
     
 
 
@@ -2192,20 +2241,20 @@ for model in models:
 
 
     
-![png](Tweet_Analysis_files/Tweet_Analysis_102_3.png)
+![png](Tweet_Analysis_files/Tweet_Analysis_108_3.png)
     
 
 
-    Accuracy Score:  0.7794285714285715
-    Precision Score:  0.7592829705505761
-    Recall Score:  0.9916387959866221
-    F1 Score:  0.8600435097897027
-    GradientBoostingClassifier()   0.7794285714285715
+    Accuracy Score:  0.7714285714285715
+    Precision Score:  0.7531806615776081
+    Recall Score:  0.9899665551839465
+    F1 Score:  0.8554913294797688
+    GradientBoostingClassifier()   0.7714285714285715
     
 
 
     
-![png](Tweet_Analysis_files/Tweet_Analysis_102_5.png)
+![png](Tweet_Analysis_files/Tweet_Analysis_108_5.png)
     
 
 
@@ -2217,16 +2266,16 @@ for model in models:
     single_model_opt(model, X_train_tf_idf, y_train, X_test_tf_idf, y_test)
 ```
 
-    Accuracy Score:  0.9337142857142857
-    Precision Score:  0.9192546583850931
+    Accuracy Score:  0.9325714285714286
+    Precision Score:  0.9178294573643411
     Recall Score:  0.9899665551839465
-    F1 Score:  0.9533011272141707
-    RandomForestClassifier()   0.9337142857142857
+    F1 Score:  0.9525341914722445
+    RandomForestClassifier()   0.9325714285714286
     
 
 
     
-![png](Tweet_Analysis_files/Tweet_Analysis_104_1.png)
+![png](Tweet_Analysis_files/Tweet_Analysis_110_1.png)
     
 
 
@@ -2239,20 +2288,20 @@ for model in models:
 
 
     
-![png](Tweet_Analysis_files/Tweet_Analysis_104_3.png)
+![png](Tweet_Analysis_files/Tweet_Analysis_110_3.png)
     
 
 
-    Accuracy Score:  0.7817142857142857
-    Precision Score:  0.7639429312581063
-    Recall Score:  0.9849498327759197
-    F1 Score:  0.8604821037253471
-    GradientBoostingClassifier()   0.7817142857142857
+    Accuracy Score:  0.784
+    Precision Score:  0.7673202614379085
+    Recall Score:  0.9816053511705686
+    F1 Score:  0.8613352898019077
+    GradientBoostingClassifier()   0.784
     
 
 
     
-![png](Tweet_Analysis_files/Tweet_Analysis_104_5.png)
+![png](Tweet_Analysis_files/Tweet_Analysis_110_5.png)
     
 
 
@@ -3293,7 +3342,7 @@ plt.show()
 
 
     
-![png](Tweet_Analysis_files/Tweet_Analysis_107_0.png)
+![png](Tweet_Analysis_files/Tweet_Analysis_113_0.png)
     
 
 
@@ -3420,585 +3469,13 @@ grid.best_params_
       warnings.warn('Your stop_words may be inconsistent with '
     C:\Users\josep\anaconda3\lib\site-packages\sklearn\feature_extraction\text.py:383: UserWarning: Your stop_words may be inconsistent with your preprocessing. Tokenizing the stop words generated tokens [":'[", ':/', 'a-z', 'a-za-z', 'http', 'n', 'w', '‘'] not in stop_words.
       warnings.warn('Your stop_words may be inconsistent with '
-    C:\Users\josep\anaconda3\lib\site-packages\sklearn\feature_extraction\text.py:383: UserWarning: Your stop_words may be inconsistent with your preprocessing. Tokenizing the stop words generated tokens ['http'] not in stop_words.
-      warnings.warn('Your stop_words may be inconsistent with '
     
 
 
 
 
     {'clf__criterion': 'gini',
-     'text_pipe__count_vectorizer__stop_words': ['she',
-      'enough',
-      'about',
-      'than',
-      'four',
-      'down',
-      'without',
-      'them',
-      'thence',
-      'see',
-      'some',
-      'amount',
-      'whatever',
-      'meanwhile',
-      'serious',
-      'whereas',
-      'such',
-      'have',
-      'although',
-      'then',
-      '’m',
-      'through',
-      'via',
-      'thereby',
-      'elsewhere',
-      'along',
-      'above',
-      'thereafter',
-      'on',
-      'both',
-      'everything',
-      'get',
-      'much',
-      'least',
-      "'re",
-      'his',
-      'each',
-      'everyone',
-      'last',
-      'perhaps',
-      'really',
-      'latter',
-      'neither',
-      'being',
-      'yet',
-      'anyway',
-      'forty',
-      'whether',
-      'noone',
-      'keep',
-      're',
-      'almost',
-      'five',
-      'may',
-      'were',
-      'take',
-      'whoever',
-      'unless',
-      'besides',
-      'beside',
-      '’re',
-      'against',
-      'here',
-      'behind',
-      'somewhere',
-      'this',
-      'n‘t',
-      'formerly',
-      'between',
-      'used',
-      'had',
-      'even',
-      'rather',
-      'all',
-      'twenty',
-      'below',
-      'due',
-      'except',
-      'and',
-      'empty',
-      'up',
-      'ourselves',
-      '’s',
-      'none',
-      'say',
-      'already',
-      'made',
-      'within',
-      'the',
-      'others',
-      'becomes',
-      'mine',
-      'alone',
-      '’ll',
-      'nothing',
-      'in',
-      'own',
-      'something',
-      'becoming',
-      'can',
-      'though',
-      'side',
-      'everywhere',
-      'somehow',
-      'nobody',
-      'very',
-      'nor',
-      'any',
-      'will',
-      'more',
-      'must',
-      'he',
-      'themselves',
-      '‘ve',
-      'ten',
-      'twelve',
-      'over',
-      'always',
-      'hereafter',
-      'with',
-      'no',
-      'wherein',
-      'thru',
-      'mostly',
-      'herein',
-      'latterly',
-      'do',
-      'well',
-      '‘m',
-      'name',
-      'but',
-      'make',
-      'yourself',
-      'by',
-      'doing',
-      'go',
-      'afterwards',
-      "'d",
-      'same',
-      'eleven',
-      'its',
-      'so',
-      'eight',
-      'an',
-      'there',
-      'into',
-      'few',
-      'is',
-      'just',
-      'hereby',
-      'thereupon',
-      'done',
-      'it',
-      'who',
-      'across',
-      'seemed',
-      'how',
-      'your',
-      'whom',
-      'ever',
-      'upon',
-      'during',
-      'also',
-      'using',
-      'seeming',
-      'be',
-      'other',
-      'various',
-      'her',
-      'wherever',
-      'because',
-      'therein',
-      'myself',
-      'seem',
-      'put',
-      'most',
-      'sometime',
-      'three',
-      'after',
-      'show',
-      'nowhere',
-      'give',
-      'please',
-      'never',
-      '‘ll',
-      'fifty',
-      'did',
-      'still',
-      'those',
-      'from',
-      'one',
-      'before',
-      'does',
-      'full',
-      'several',
-      'us',
-      'whole',
-      'former',
-      'should',
-      'namely',
-      'too',
-      'back',
-      'until',
-      'whereby',
-      'whence',
-      'quite',
-      'which',
-      'became',
-      'whereafter',
-      'you',
-      'throughout',
-      'sixty',
-      'every',
-      'ca',
-      'would',
-      'therefore',
-      'him',
-      'less',
-      'my',
-      'whither',
-      'anything',
-      'sometimes',
-      'again',
-      'are',
-      'per',
-      'what',
-      'their',
-      'n’t',
-      'anyhow',
-      'nevertheless',
-      'call',
-      'many',
-      'could',
-      'another',
-      "n't",
-      'anywhere',
-      'top',
-      'often',
-      'i',
-      "'m",
-      'beforehand',
-      'only',
-      'might',
-      'beyond',
-      'fifteen',
-      'our',
-      'bottom',
-      'that',
-      'however',
-      'now',
-      'been',
-      'regarding',
-      "'s",
-      'or',
-      '’d',
-      'out',
-      'as',
-      'first',
-      'together',
-      'we',
-      'whose',
-      'move',
-      'not',
-      'front',
-      'thus',
-      'indeed',
-      'off',
-      'towards',
-      'toward',
-      "'ll",
-      'where',
-      'around',
-      'am',
-      'part',
-      '‘re',
-      'six',
-      'become',
-      'hence',
-      'ours',
-      'under',
-      'a',
-      'yours',
-      'himself',
-      'otherwise',
-      'moreover',
-      'among',
-      'whereupon',
-      'whenever',
-      'if',
-      'two',
-      'once',
-      'seems',
-      'while',
-      'onto',
-      'for',
-      'was',
-      '‘s',
-      'they',
-      'of',
-      'at',
-      'itself',
-      '’ve',
-      'hers',
-      'cannot',
-      'nine',
-      'why',
-      'to',
-      "'ve",
-      'these',
-      'third',
-      'amongst',
-      'hereupon',
-      'further',
-      'has',
-      'yourselves',
-      'next',
-      'else',
-      'someone',
-      'anyone',
-      'either',
-      'when',
-      'herself',
-      '‘d',
-      'hundred',
-      'me',
-      'since',
-      '!',
-      '"',
-      '#',
-      '$',
-      '%',
-      '&',
-      "'",
-      '(',
-      ')',
-      '*',
-      '+',
-      ',',
-      '-',
-      '.',
-      '/',
-      ':',
-      ';',
-      '<',
-      '=',
-      '>',
-      '?',
-      '@',
-      '[',
-      '\\',
-      ']',
-      '^',
-      '_',
-      '`',
-      '{',
-      '|',
-      '}',
-      '~',
-      'i',
-      'me',
-      'my',
-      'myself',
-      'we',
-      'our',
-      'ours',
-      'ourselves',
-      'you',
-      "you're",
-      "you've",
-      "you'll",
-      "you'd",
-      'your',
-      'yours',
-      'yourself',
-      'yourselves',
-      'he',
-      'him',
-      'his',
-      'himself',
-      'she',
-      "she's",
-      'her',
-      'hers',
-      'herself',
-      'it',
-      "it's",
-      'its',
-      'itself',
-      'they',
-      'them',
-      'their',
-      'theirs',
-      'themselves',
-      'what',
-      'which',
-      'who',
-      'whom',
-      'this',
-      'that',
-      "that'll",
-      'these',
-      'those',
-      'am',
-      'is',
-      'are',
-      'was',
-      'were',
-      'be',
-      'been',
-      'being',
-      'have',
-      'has',
-      'had',
-      'having',
-      'do',
-      'does',
-      'did',
-      'doing',
-      'a',
-      'an',
-      'the',
-      'and',
-      'but',
-      'if',
-      'or',
-      'because',
-      'as',
-      'until',
-      'while',
-      'of',
-      'at',
-      'by',
-      'for',
-      'with',
-      'about',
-      'against',
-      'between',
-      'into',
-      'through',
-      'during',
-      'before',
-      'after',
-      'above',
-      'below',
-      'to',
-      'from',
-      'up',
-      'down',
-      'in',
-      'out',
-      'on',
-      'off',
-      'over',
-      'under',
-      'again',
-      'further',
-      'then',
-      'once',
-      'here',
-      'there',
-      'when',
-      'where',
-      'why',
-      'how',
-      'all',
-      'any',
-      'both',
-      'each',
-      'few',
-      'more',
-      'most',
-      'other',
-      'some',
-      'such',
-      'no',
-      'nor',
-      'not',
-      'only',
-      'own',
-      'same',
-      'so',
-      'than',
-      'too',
-      'very',
-      's',
-      't',
-      'can',
-      'will',
-      'just',
-      'don',
-      "don't",
-      'should',
-      "should've",
-      'now',
-      'd',
-      'll',
-      'm',
-      'o',
-      're',
-      've',
-      'y',
-      'ain',
-      'aren',
-      "aren't",
-      'couldn',
-      "couldn't",
-      'didn',
-      "didn't",
-      'doesn',
-      "doesn't",
-      'hadn',
-      "hadn't",
-      'hasn',
-      "hasn't",
-      'haven',
-      "haven't",
-      'isn',
-      "isn't",
-      'ma',
-      'mightn',
-      "mightn't",
-      'mustn',
-      "mustn't",
-      'needn',
-      "needn't",
-      'shan',
-      "shan't",
-      'shouldn',
-      "shouldn't",
-      'wasn',
-      "wasn't",
-      'weren',
-      "weren't",
-      'won',
-      "won't",
-      'wouldn',
-      "wouldn't",
-      '“',
-      '”',
-      '...',
-      "''",
-      '’',
-      '``',
-      'https',
-      'rt',
-      '\\.+',
-      'sxsw',
-      'mention',
-      "[a-zA-Z]+\\'?s]",
-      '(http[s]?://\\w*\\.\\w*/+\\w+)',
-      '\\#\\w*',
-      'RT [@]?\\w*:',
-      '\\@\\w*',
-      '\\d$',
-      '^\\d',
-      "([a-zA-Z]+(?:'[a-z]+)?)",
-      '\\d.',
-      '\\d',
-      'RT',
-      '^http[s]?',
-      'za',
-      '0',
-      '1',
-      '2',
-      '3',
-      '4',
-      '5',
-      '6',
-      '7',
-      '8',
-      '9'],
+     'text_pipe__count_vectorizer__stop_words': None,
      'text_pipe__count_vectorizer__tokenizer': None,
      'text_pipe__tf_transformer__use_idf': False}
 
@@ -4017,18 +3494,18 @@ evaluate_model(y_test,y_hat_test,X_test,best_pipe)
 
                   precision    recall  f1-score   support
     
-               0       0.96      0.86      0.91       277
-               1       0.94      0.98      0.96       598
+               0       1.00      0.82      0.90       277
+               1       0.92      1.00      0.96       598
     
         accuracy                           0.94       875
-       macro avg       0.95      0.92      0.93       875
+       macro avg       0.96      0.91      0.93       875
     weighted avg       0.94      0.94      0.94       875
     
     
 
 
     
-![png](Tweet_Analysis_files/Tweet_Analysis_119_1.png)
+![png](Tweet_Analysis_files/Tweet_Analysis_125_1.png)
     
 
 
@@ -4147,7 +3624,7 @@ plt.show()
 
 
     
-![png](Tweet_Analysis_files/Tweet_Analysis_125_0.png)
+![png](Tweet_Analysis_files/Tweet_Analysis_131_0.png)
     
 
 
@@ -5354,45 +4831,45 @@ history = model.fit(train, label_train, batch_size=32, epochs=20, verbose=2,
 ```
 
     Epoch 1/20
-    38/38 - 1s - loss: 0.6205 - acc: 0.6908 - val_loss: 0.3322 - val_acc: 1.0000
+    38/38 - 2s - loss: 0.6475 - acc: 0.6825 - val_loss: 0.4453 - val_acc: 1.0000
     Epoch 2/20
-    38/38 - 0s - loss: 0.4580 - acc: 0.7767 - val_loss: 0.2384 - val_acc: 0.9800
+    38/38 - 0s - loss: 0.5181 - acc: 0.7325 - val_loss: 0.3239 - val_acc: 0.9767
     Epoch 3/20
-    38/38 - 0s - loss: 0.2799 - acc: 0.9208 - val_loss: 0.1912 - val_acc: 0.9633
+    38/38 - 0s - loss: 0.3177 - acc: 0.9108 - val_loss: 0.2295 - val_acc: 0.9367
     Epoch 4/20
-    38/38 - 0s - loss: 0.1385 - acc: 0.9733 - val_loss: 0.1473 - val_acc: 0.9500
+    38/38 - 0s - loss: 0.1449 - acc: 0.9725 - val_loss: 0.1581 - val_acc: 0.9500
     Epoch 5/20
-    38/38 - 0s - loss: 0.0633 - acc: 0.9933 - val_loss: 0.1253 - val_acc: 0.9567
+    38/38 - 0s - loss: 0.0655 - acc: 0.9892 - val_loss: 0.1624 - val_acc: 0.9300
     Epoch 6/20
-    38/38 - 0s - loss: 0.0304 - acc: 0.9975 - val_loss: 0.1498 - val_acc: 0.9133
+    38/38 - 0s - loss: 0.0335 - acc: 0.9967 - val_loss: 0.1459 - val_acc: 0.9333
     Epoch 7/20
-    38/38 - 0s - loss: 0.0166 - acc: 1.0000 - val_loss: 0.1411 - val_acc: 0.9200
+    38/38 - 0s - loss: 0.0188 - acc: 1.0000 - val_loss: 0.1645 - val_acc: 0.9167
     Epoch 8/20
-    38/38 - 0s - loss: 0.0101 - acc: 1.0000 - val_loss: 0.1322 - val_acc: 0.9267
+    38/38 - 0s - loss: 0.0114 - acc: 1.0000 - val_loss: 0.1565 - val_acc: 0.9200
     Epoch 9/20
-    38/38 - 0s - loss: 0.0070 - acc: 1.0000 - val_loss: 0.1541 - val_acc: 0.9133
+    38/38 - 0s - loss: 0.0076 - acc: 1.0000 - val_loss: 0.1623 - val_acc: 0.9200
     Epoch 10/20
-    38/38 - 0s - loss: 0.0050 - acc: 1.0000 - val_loss: 0.1688 - val_acc: 0.9100
+    38/38 - 0s - loss: 0.0055 - acc: 1.0000 - val_loss: 0.1720 - val_acc: 0.9200
     Epoch 11/20
-    38/38 - 0s - loss: 0.0038 - acc: 1.0000 - val_loss: 0.1384 - val_acc: 0.9267
+    38/38 - 0s - loss: 0.0042 - acc: 1.0000 - val_loss: 0.1660 - val_acc: 0.9200
     Epoch 12/20
-    38/38 - 0s - loss: 0.0030 - acc: 1.0000 - val_loss: 0.1757 - val_acc: 0.9100
+    38/38 - 0s - loss: 0.0033 - acc: 1.0000 - val_loss: 0.1752 - val_acc: 0.9200
     Epoch 13/20
-    38/38 - 0s - loss: 0.0024 - acc: 1.0000 - val_loss: 0.1566 - val_acc: 0.9200
+    38/38 - 0s - loss: 0.0026 - acc: 1.0000 - val_loss: 0.1759 - val_acc: 0.9200
     Epoch 14/20
-    38/38 - 0s - loss: 0.0020 - acc: 1.0000 - val_loss: 0.1674 - val_acc: 0.9167
+    38/38 - 0s - loss: 0.0021 - acc: 1.0000 - val_loss: 0.1779 - val_acc: 0.9200
     Epoch 15/20
-    38/38 - 0s - loss: 0.0016 - acc: 1.0000 - val_loss: 0.1673 - val_acc: 0.9167
+    38/38 - 0s - loss: 0.0018 - acc: 1.0000 - val_loss: 0.1817 - val_acc: 0.9200
     Epoch 16/20
-    38/38 - 0s - loss: 0.0014 - acc: 1.0000 - val_loss: 0.1717 - val_acc: 0.9167
+    38/38 - 0s - loss: 0.0015 - acc: 1.0000 - val_loss: 0.1797 - val_acc: 0.9200
     Epoch 17/20
-    38/38 - 0s - loss: 0.0012 - acc: 1.0000 - val_loss: 0.1737 - val_acc: 0.9167
+    38/38 - 0s - loss: 0.0013 - acc: 1.0000 - val_loss: 0.1855 - val_acc: 0.9200
     Epoch 18/20
-    38/38 - 0s - loss: 0.0011 - acc: 1.0000 - val_loss: 0.1782 - val_acc: 0.9133
+    38/38 - 0s - loss: 0.0011 - acc: 1.0000 - val_loss: 0.1845 - val_acc: 0.9200
     Epoch 19/20
-    38/38 - 0s - loss: 9.2470e-04 - acc: 1.0000 - val_loss: 0.1748 - val_acc: 0.9167
+    38/38 - 0s - loss: 9.7747e-04 - acc: 1.0000 - val_loss: 0.1834 - val_acc: 0.9200
     Epoch 20/20
-    38/38 - 0s - loss: 8.1632e-04 - acc: 1.0000 - val_loss: 0.1790 - val_acc: 0.9167
+    38/38 - 0s - loss: 8.5869e-04 - acc: 1.0000 - val_loss: 0.1911 - val_acc: 0.9200
     
 
 ### Training and Validation Graphs
@@ -5416,7 +4893,7 @@ plt.show()
 
 
     
-![png](Tweet_Analysis_files/Tweet_Analysis_150_0.png)
+![png](Tweet_Analysis_files/Tweet_Analysis_156_0.png)
     
 
 
@@ -5440,7 +4917,7 @@ plt.show()
 
 
     
-![png](Tweet_Analysis_files/Tweet_Analysis_151_0.png)
+![png](Tweet_Analysis_files/Tweet_Analysis_157_0.png)
     
 
 
@@ -5487,44 +4964,44 @@ data[:10]
 model_W2V = Word2Vec(data, size =100, window=5, min_count=1, workers=4)
 ```
 
-    2020-12-23 10:32:22,951 : INFO : collecting all words and their counts
-    2020-12-23 10:32:22,952 : INFO : PROGRESS: at sentence #0, processed 0 words, keeping 0 word types
-    2020-12-23 10:32:22,972 : INFO : collected 5920 word types from a corpus of 86715 raw words and 3500 sentences
-    2020-12-23 10:32:22,973 : INFO : Loading a fresh vocabulary
-    2020-12-23 10:32:22,986 : INFO : effective_min_count=1 retains 5920 unique words (100% of original 5920, drops 0)
-    2020-12-23 10:32:22,987 : INFO : effective_min_count=1 leaves 86715 word corpus (100% of original 86715, drops 0)
-    2020-12-23 10:32:23,005 : INFO : deleting the raw counts dictionary of 5920 items
-    2020-12-23 10:32:23,006 : INFO : sample=0.001 downsamples 52 most-common words
-    2020-12-23 10:32:23,006 : INFO : downsampling leaves estimated 56808 word corpus (65.5% of prior 86715)
-    2020-12-23 10:32:23,022 : INFO : estimated required memory for 5920 words and 100 dimensions: 7696000 bytes
-    2020-12-23 10:32:23,022 : INFO : resetting layer weights
-    2020-12-23 10:32:24,116 : INFO : training model with 4 workers on 5920 vocabulary and 100 features, using sg=0 hs=0 sample=0.001 negative=5 window=5
-    2020-12-23 10:32:24,170 : INFO : worker thread finished; awaiting finish of 3 more threads
-    2020-12-23 10:32:24,172 : INFO : worker thread finished; awaiting finish of 2 more threads
-    2020-12-23 10:32:24,174 : INFO : worker thread finished; awaiting finish of 1 more threads
-    2020-12-23 10:32:24,175 : INFO : worker thread finished; awaiting finish of 0 more threads
-    2020-12-23 10:32:24,176 : INFO : EPOCH - 1 : training on 86715 raw words (56678 effective words) took 0.1s, 1077414 effective words/s
-    2020-12-23 10:32:24,221 : INFO : worker thread finished; awaiting finish of 3 more threads
-    2020-12-23 10:32:24,223 : INFO : worker thread finished; awaiting finish of 2 more threads
-    2020-12-23 10:32:24,227 : INFO : worker thread finished; awaiting finish of 1 more threads
-    2020-12-23 10:32:24,230 : INFO : worker thread finished; awaiting finish of 0 more threads
-    2020-12-23 10:32:24,230 : INFO : EPOCH - 2 : training on 86715 raw words (56756 effective words) took 0.0s, 1214011 effective words/s
-    2020-12-23 10:32:24,273 : INFO : worker thread finished; awaiting finish of 3 more threads
-    2020-12-23 10:32:24,278 : INFO : worker thread finished; awaiting finish of 2 more threads
-    2020-12-23 10:32:24,282 : INFO : worker thread finished; awaiting finish of 1 more threads
-    2020-12-23 10:32:24,285 : INFO : worker thread finished; awaiting finish of 0 more threads
-    2020-12-23 10:32:24,286 : INFO : EPOCH - 3 : training on 86715 raw words (56789 effective words) took 0.0s, 1145385 effective words/s
-    2020-12-23 10:32:24,332 : INFO : worker thread finished; awaiting finish of 3 more threads
-    2020-12-23 10:32:24,337 : INFO : worker thread finished; awaiting finish of 2 more threads
-    2020-12-23 10:32:24,338 : INFO : worker thread finished; awaiting finish of 1 more threads
-    2020-12-23 10:32:24,339 : INFO : worker thread finished; awaiting finish of 0 more threads
-    2020-12-23 10:32:24,340 : INFO : EPOCH - 4 : training on 86715 raw words (56784 effective words) took 0.0s, 1267791 effective words/s
-    2020-12-23 10:32:24,382 : INFO : worker thread finished; awaiting finish of 3 more threads
-    2020-12-23 10:32:24,389 : INFO : worker thread finished; awaiting finish of 2 more threads
-    2020-12-23 10:32:24,390 : INFO : worker thread finished; awaiting finish of 1 more threads
-    2020-12-23 10:32:24,392 : INFO : worker thread finished; awaiting finish of 0 more threads
-    2020-12-23 10:32:24,392 : INFO : EPOCH - 5 : training on 86715 raw words (56806 effective words) took 0.0s, 1247510 effective words/s
-    2020-12-23 10:32:24,393 : INFO : training on a 433575 raw words (283813 effective words) took 0.3s, 1027608 effective words/s
+    2020-12-30 10:38:26,013 : INFO : collecting all words and their counts
+    2020-12-30 10:38:26,015 : INFO : PROGRESS: at sentence #0, processed 0 words, keeping 0 word types
+    2020-12-30 10:38:26,038 : INFO : collected 5920 word types from a corpus of 86715 raw words and 3500 sentences
+    2020-12-30 10:38:26,039 : INFO : Loading a fresh vocabulary
+    2020-12-30 10:38:26,054 : INFO : effective_min_count=1 retains 5920 unique words (100% of original 5920, drops 0)
+    2020-12-30 10:38:26,056 : INFO : effective_min_count=1 leaves 86715 word corpus (100% of original 86715, drops 0)
+    2020-12-30 10:38:26,085 : INFO : deleting the raw counts dictionary of 5920 items
+    2020-12-30 10:38:26,086 : INFO : sample=0.001 downsamples 52 most-common words
+    2020-12-30 10:38:26,087 : INFO : downsampling leaves estimated 56808 word corpus (65.5% of prior 86715)
+    2020-12-30 10:38:26,101 : INFO : estimated required memory for 5920 words and 100 dimensions: 7696000 bytes
+    2020-12-30 10:38:26,102 : INFO : resetting layer weights
+    2020-12-30 10:38:27,424 : INFO : training model with 4 workers on 5920 vocabulary and 100 features, using sg=0 hs=0 sample=0.001 negative=5 window=5
+    2020-12-30 10:38:27,496 : INFO : worker thread finished; awaiting finish of 3 more threads
+    2020-12-30 10:38:27,501 : INFO : worker thread finished; awaiting finish of 2 more threads
+    2020-12-30 10:38:27,502 : INFO : worker thread finished; awaiting finish of 1 more threads
+    2020-12-30 10:38:27,505 : INFO : worker thread finished; awaiting finish of 0 more threads
+    2020-12-30 10:38:27,506 : INFO : EPOCH - 1 : training on 86715 raw words (56911 effective words) took 0.1s, 773591 effective words/s
+    2020-12-30 10:38:27,557 : INFO : worker thread finished; awaiting finish of 3 more threads
+    2020-12-30 10:38:27,560 : INFO : worker thread finished; awaiting finish of 2 more threads
+    2020-12-30 10:38:27,563 : INFO : worker thread finished; awaiting finish of 1 more threads
+    2020-12-30 10:38:27,565 : INFO : worker thread finished; awaiting finish of 0 more threads
+    2020-12-30 10:38:27,567 : INFO : EPOCH - 2 : training on 86715 raw words (56896 effective words) took 0.1s, 1076681 effective words/s
+    2020-12-30 10:38:27,618 : INFO : worker thread finished; awaiting finish of 3 more threads
+    2020-12-30 10:38:27,624 : INFO : worker thread finished; awaiting finish of 2 more threads
+    2020-12-30 10:38:27,628 : INFO : worker thread finished; awaiting finish of 1 more threads
+    2020-12-30 10:38:27,629 : INFO : worker thread finished; awaiting finish of 0 more threads
+    2020-12-30 10:38:27,630 : INFO : EPOCH - 3 : training on 86715 raw words (56804 effective words) took 0.1s, 1044072 effective words/s
+    2020-12-30 10:38:27,688 : INFO : worker thread finished; awaiting finish of 3 more threads
+    2020-12-30 10:38:27,694 : INFO : worker thread finished; awaiting finish of 2 more threads
+    2020-12-30 10:38:27,695 : INFO : worker thread finished; awaiting finish of 1 more threads
+    2020-12-30 10:38:27,696 : INFO : worker thread finished; awaiting finish of 0 more threads
+    2020-12-30 10:38:27,697 : INFO : EPOCH - 4 : training on 86715 raw words (56933 effective words) took 0.1s, 959681 effective words/s
+    2020-12-30 10:38:27,753 : INFO : worker thread finished; awaiting finish of 3 more threads
+    2020-12-30 10:38:27,757 : INFO : worker thread finished; awaiting finish of 2 more threads
+    2020-12-30 10:38:27,760 : INFO : worker thread finished; awaiting finish of 1 more threads
+    2020-12-30 10:38:27,761 : INFO : worker thread finished; awaiting finish of 0 more threads
+    2020-12-30 10:38:27,762 : INFO : EPOCH - 5 : training on 86715 raw words (56855 effective words) took 0.1s, 1012592 effective words/s
+    2020-12-30 10:38:27,763 : INFO : training on a 433575 raw words (284399 effective words) took 0.3s, 841277 effective words/s
     
 
 
@@ -5532,65 +5009,65 @@ model_W2V = Word2Vec(data, size =100, window=5, min_count=1, workers=4)
 model_W2V.train(data,total_examples=model_W2V.corpus_count, epochs=10)
 ```
 
-    2020-12-23 10:32:24,400 : WARNING : Effective 'alpha' higher than previous training cycles
-    2020-12-23 10:32:24,401 : INFO : training model with 4 workers on 5920 vocabulary and 100 features, using sg=0 hs=0 sample=0.001 negative=5 window=5
-    2020-12-23 10:32:24,446 : INFO : worker thread finished; awaiting finish of 3 more threads
-    2020-12-23 10:32:24,451 : INFO : worker thread finished; awaiting finish of 2 more threads
-    2020-12-23 10:32:24,455 : INFO : worker thread finished; awaiting finish of 1 more threads
-    2020-12-23 10:32:24,457 : INFO : worker thread finished; awaiting finish of 0 more threads
-    2020-12-23 10:32:24,458 : INFO : EPOCH - 1 : training on 86715 raw words (56688 effective words) took 0.1s, 1132709 effective words/s
-    2020-12-23 10:32:24,507 : INFO : worker thread finished; awaiting finish of 3 more threads
-    2020-12-23 10:32:24,513 : INFO : worker thread finished; awaiting finish of 2 more threads
-    2020-12-23 10:32:24,514 : INFO : worker thread finished; awaiting finish of 1 more threads
-    2020-12-23 10:32:24,515 : INFO : worker thread finished; awaiting finish of 0 more threads
-    2020-12-23 10:32:24,516 : INFO : EPOCH - 2 : training on 86715 raw words (56727 effective words) took 0.0s, 1153989 effective words/s
-    2020-12-23 10:32:24,556 : INFO : worker thread finished; awaiting finish of 3 more threads
-    2020-12-23 10:32:24,560 : INFO : worker thread finished; awaiting finish of 2 more threads
-    2020-12-23 10:32:24,565 : INFO : worker thread finished; awaiting finish of 1 more threads
-    2020-12-23 10:32:24,567 : INFO : worker thread finished; awaiting finish of 0 more threads
-    2020-12-23 10:32:24,567 : INFO : EPOCH - 3 : training on 86715 raw words (56585 effective words) took 0.0s, 1233657 effective words/s
-    2020-12-23 10:32:24,613 : INFO : worker thread finished; awaiting finish of 3 more threads
-    2020-12-23 10:32:24,617 : INFO : worker thread finished; awaiting finish of 2 more threads
-    2020-12-23 10:32:24,618 : INFO : worker thread finished; awaiting finish of 1 more threads
-    2020-12-23 10:32:24,619 : INFO : worker thread finished; awaiting finish of 0 more threads
-    2020-12-23 10:32:24,620 : INFO : EPOCH - 4 : training on 86715 raw words (56940 effective words) took 0.0s, 1275632 effective words/s
-    2020-12-23 10:32:24,665 : INFO : worker thread finished; awaiting finish of 3 more threads
-    2020-12-23 10:32:24,671 : INFO : worker thread finished; awaiting finish of 2 more threads
-    2020-12-23 10:32:24,675 : INFO : worker thread finished; awaiting finish of 1 more threads
-    2020-12-23 10:32:24,676 : INFO : worker thread finished; awaiting finish of 0 more threads
-    2020-12-23 10:32:24,677 : INFO : EPOCH - 5 : training on 86715 raw words (56784 effective words) took 0.1s, 1130163 effective words/s
-    2020-12-23 10:32:24,718 : INFO : worker thread finished; awaiting finish of 3 more threads
-    2020-12-23 10:32:24,724 : INFO : worker thread finished; awaiting finish of 2 more threads
-    2020-12-23 10:32:24,725 : INFO : worker thread finished; awaiting finish of 1 more threads
-    2020-12-23 10:32:24,726 : INFO : worker thread finished; awaiting finish of 0 more threads
-    2020-12-23 10:32:24,727 : INFO : EPOCH - 6 : training on 86715 raw words (56796 effective words) took 0.0s, 1283618 effective words/s
-    2020-12-23 10:32:24,765 : INFO : worker thread finished; awaiting finish of 3 more threads
-    2020-12-23 10:32:24,772 : INFO : worker thread finished; awaiting finish of 2 more threads
-    2020-12-23 10:32:24,773 : INFO : worker thread finished; awaiting finish of 1 more threads
-    2020-12-23 10:32:24,776 : INFO : worker thread finished; awaiting finish of 0 more threads
-    2020-12-23 10:32:24,777 : INFO : EPOCH - 7 : training on 86715 raw words (56687 effective words) took 0.0s, 1287861 effective words/s
-    2020-12-23 10:32:24,818 : INFO : worker thread finished; awaiting finish of 3 more threads
-    2020-12-23 10:32:24,823 : INFO : worker thread finished; awaiting finish of 2 more threads
-    2020-12-23 10:32:24,827 : INFO : worker thread finished; awaiting finish of 1 more threads
-    2020-12-23 10:32:24,830 : INFO : worker thread finished; awaiting finish of 0 more threads
-    2020-12-23 10:32:24,831 : INFO : EPOCH - 8 : training on 86715 raw words (56927 effective words) took 0.0s, 1201724 effective words/s
-    2020-12-23 10:32:24,872 : INFO : worker thread finished; awaiting finish of 3 more threads
-    2020-12-23 10:32:24,879 : INFO : worker thread finished; awaiting finish of 2 more threads
-    2020-12-23 10:32:24,880 : INFO : worker thread finished; awaiting finish of 1 more threads
-    2020-12-23 10:32:24,881 : INFO : worker thread finished; awaiting finish of 0 more threads
-    2020-12-23 10:32:24,882 : INFO : EPOCH - 9 : training on 86715 raw words (56887 effective words) took 0.0s, 1250761 effective words/s
-    2020-12-23 10:32:24,922 : INFO : worker thread finished; awaiting finish of 3 more threads
-    2020-12-23 10:32:24,929 : INFO : worker thread finished; awaiting finish of 2 more threads
-    2020-12-23 10:32:24,930 : INFO : worker thread finished; awaiting finish of 1 more threads
-    2020-12-23 10:32:24,931 : INFO : worker thread finished; awaiting finish of 0 more threads
-    2020-12-23 10:32:24,931 : INFO : EPOCH - 10 : training on 86715 raw words (56789 effective words) took 0.0s, 1301291 effective words/s
-    2020-12-23 10:32:24,932 : INFO : training on a 867150 raw words (567810 effective words) took 0.5s, 1071163 effective words/s
+    2020-12-30 10:38:27,774 : WARNING : Effective 'alpha' higher than previous training cycles
+    2020-12-30 10:38:27,776 : INFO : training model with 4 workers on 5920 vocabulary and 100 features, using sg=0 hs=0 sample=0.001 negative=5 window=5
+    2020-12-30 10:38:27,849 : INFO : worker thread finished; awaiting finish of 3 more threads
+    2020-12-30 10:38:27,851 : INFO : worker thread finished; awaiting finish of 2 more threads
+    2020-12-30 10:38:27,854 : INFO : worker thread finished; awaiting finish of 1 more threads
+    2020-12-30 10:38:27,855 : INFO : worker thread finished; awaiting finish of 0 more threads
+    2020-12-30 10:38:27,856 : INFO : EPOCH - 1 : training on 86715 raw words (56838 effective words) took 0.1s, 822211 effective words/s
+    2020-12-30 10:38:27,916 : INFO : worker thread finished; awaiting finish of 3 more threads
+    2020-12-30 10:38:27,925 : INFO : worker thread finished; awaiting finish of 2 more threads
+    2020-12-30 10:38:27,927 : INFO : worker thread finished; awaiting finish of 1 more threads
+    2020-12-30 10:38:27,929 : INFO : worker thread finished; awaiting finish of 0 more threads
+    2020-12-30 10:38:27,930 : INFO : EPOCH - 2 : training on 86715 raw words (56761 effective words) took 0.1s, 856664 effective words/s
+    2020-12-30 10:38:27,993 : INFO : worker thread finished; awaiting finish of 3 more threads
+    2020-12-30 10:38:28,001 : INFO : worker thread finished; awaiting finish of 2 more threads
+    2020-12-30 10:38:28,003 : INFO : worker thread finished; awaiting finish of 1 more threads
+    2020-12-30 10:38:28,004 : INFO : worker thread finished; awaiting finish of 0 more threads
+    2020-12-30 10:38:28,005 : INFO : EPOCH - 3 : training on 86715 raw words (56869 effective words) took 0.1s, 857186 effective words/s
+    2020-12-30 10:38:28,061 : INFO : worker thread finished; awaiting finish of 3 more threads
+    2020-12-30 10:38:28,066 : INFO : worker thread finished; awaiting finish of 2 more threads
+    2020-12-30 10:38:28,070 : INFO : worker thread finished; awaiting finish of 1 more threads
+    2020-12-30 10:38:28,073 : INFO : worker thread finished; awaiting finish of 0 more threads
+    2020-12-30 10:38:28,074 : INFO : EPOCH - 4 : training on 86715 raw words (56785 effective words) took 0.1s, 948389 effective words/s
+    2020-12-30 10:38:28,133 : INFO : worker thread finished; awaiting finish of 3 more threads
+    2020-12-30 10:38:28,141 : INFO : worker thread finished; awaiting finish of 2 more threads
+    2020-12-30 10:38:28,144 : INFO : worker thread finished; awaiting finish of 1 more threads
+    2020-12-30 10:38:28,146 : INFO : worker thread finished; awaiting finish of 0 more threads
+    2020-12-30 10:38:28,147 : INFO : EPOCH - 5 : training on 86715 raw words (56762 effective words) took 0.1s, 879895 effective words/s
+    2020-12-30 10:38:28,208 : INFO : worker thread finished; awaiting finish of 3 more threads
+    2020-12-30 10:38:28,216 : INFO : worker thread finished; awaiting finish of 2 more threads
+    2020-12-30 10:38:28,218 : INFO : worker thread finished; awaiting finish of 1 more threads
+    2020-12-30 10:38:28,220 : INFO : worker thread finished; awaiting finish of 0 more threads
+    2020-12-30 10:38:28,221 : INFO : EPOCH - 6 : training on 86715 raw words (56700 effective words) took 0.1s, 893627 effective words/s
+    2020-12-30 10:38:28,285 : INFO : worker thread finished; awaiting finish of 3 more threads
+    2020-12-30 10:38:28,291 : INFO : worker thread finished; awaiting finish of 2 more threads
+    2020-12-30 10:38:28,292 : INFO : worker thread finished; awaiting finish of 1 more threads
+    2020-12-30 10:38:28,296 : INFO : worker thread finished; awaiting finish of 0 more threads
+    2020-12-30 10:38:28,297 : INFO : EPOCH - 7 : training on 86715 raw words (56979 effective words) took 0.1s, 834156 effective words/s
+    2020-12-30 10:38:28,363 : INFO : worker thread finished; awaiting finish of 3 more threads
+    2020-12-30 10:38:28,365 : INFO : worker thread finished; awaiting finish of 2 more threads
+    2020-12-30 10:38:28,369 : INFO : worker thread finished; awaiting finish of 1 more threads
+    2020-12-30 10:38:28,370 : INFO : worker thread finished; awaiting finish of 0 more threads
+    2020-12-30 10:38:28,371 : INFO : EPOCH - 8 : training on 86715 raw words (56958 effective words) took 0.1s, 878632 effective words/s
+    2020-12-30 10:38:28,436 : INFO : worker thread finished; awaiting finish of 3 more threads
+    2020-12-30 10:38:28,442 : INFO : worker thread finished; awaiting finish of 2 more threads
+    2020-12-30 10:38:28,444 : INFO : worker thread finished; awaiting finish of 1 more threads
+    2020-12-30 10:38:28,446 : INFO : worker thread finished; awaiting finish of 0 more threads
+    2020-12-30 10:38:28,447 : INFO : EPOCH - 9 : training on 86715 raw words (56862 effective words) took 0.1s, 844568 effective words/s
+    2020-12-30 10:38:28,507 : INFO : worker thread finished; awaiting finish of 3 more threads
+    2020-12-30 10:38:28,509 : INFO : worker thread finished; awaiting finish of 2 more threads
+    2020-12-30 10:38:28,513 : INFO : worker thread finished; awaiting finish of 1 more threads
+    2020-12-30 10:38:28,515 : INFO : worker thread finished; awaiting finish of 0 more threads
+    2020-12-30 10:38:28,516 : INFO : EPOCH - 10 : training on 86715 raw words (56663 effective words) took 0.1s, 938339 effective words/s
+    2020-12-30 10:38:28,516 : INFO : training on a 867150 raw words (568177 effective words) took 0.7s, 768799 effective words/s
     
 
 
 
 
-    (567810, 867150)
+    (568177, 867150)
 
 
 
@@ -5604,22 +5081,22 @@ wv = model_W2V.wv
 wv.most_similar(positive='phone')
 ```
 
-    2020-12-23 10:32:25,357 : INFO : precomputing L2-norms of word weight vectors
+    2020-12-30 10:38:28,533 : INFO : precomputing L2-norms of word weight vectors
     
 
 
 
 
-    [('Ubuntu', 0.9763219356536865),
-     ('3g', 0.9685029983520508),
-     ('tweeted', 0.9618393182754517),
-     ('Qrank', 0.959566593170166),
-     ('horrendous', 0.958916187286377),
-     ('words', 0.9553130865097046),
-     ('bluetooth', 0.9540582895278931),
-     ('leather', 0.951541543006897),
-     ('Thursday', 0.9499979615211487),
-     ('cases', 0.9488207101821899)]
+    [('brain', 0.9711115956306458),
+     ('makes', 0.9684733152389526),
+     ('Double', 0.9683538675308228),
+     ('3/20', 0.9668301343917847),
+     ('curse', 0.9639092683792114),
+     ('words', 0.9631701111793518),
+     ('Typing', 0.9614925384521484),
+     ('3g', 0.9595977067947388),
+     ('Qrank', 0.9587474465370178),
+     ('nor', 0.9580039978027344)]
 
 
 
@@ -5631,26 +5108,31 @@ wv['help']
 
 
 
-    array([-0.05602682,  0.1898873 , -0.04284276, -0.09649099, -0.0919168 ,
-            0.15212974,  0.19682896,  0.21751685, -0.03360185, -0.24705708,
-            0.08084903,  0.00062578,  0.11321343, -0.03866779,  0.06944523,
-            0.04494823,  0.02281479, -0.06902155,  0.06123722,  0.01340639,
-           -0.11258984,  0.10590371, -0.04277435, -0.29310337,  0.12547119,
-            0.26872963, -0.15748288,  0.0803702 , -0.03750943,  0.13433443,
-            0.14194822,  0.1628125 ,  0.11665671,  0.35196766, -0.00845829,
-           -0.18044046,  0.05874589, -0.13683037, -0.03252002, -0.08289275,
-           -0.35061875,  0.09212191, -0.1106097 ,  0.21421194, -0.02004252,
-           -0.06794347,  0.14174776, -0.00507101,  0.44819406,  0.11436772,
-            0.20344055, -0.11549824,  0.39827913,  0.0403868 , -0.21902487,
-           -0.10420201, -0.1485029 ,  0.04777614,  0.1415703 ,  0.09671021,
-           -0.10265251, -0.01838774, -0.24499744, -0.03473309, -0.02861528,
-            0.31340402,  0.02488031,  0.14073284, -0.18057962, -0.09320375,
-            0.01304666, -0.11724676, -0.28735343,  0.0397812 ,  0.19223985,
-            0.51412284,  0.10686409,  0.15148091, -0.2194091 ,  0.14679854,
-           -0.27218127, -0.17965911, -0.02672608,  0.34494448,  0.10500586,
-           -0.13947481,  0.18468934, -0.171683  , -0.12317169, -0.2332293 ,
-            0.2534559 , -0.1023906 ,  0.05763213,  0.00081763,  0.29812163,
-            0.11533024, -0.1922864 , -0.34497595,  0.410213  , -0.2201724 ],
+    array([-1.15405507e-01,  1.14294894e-01,  8.07320923e-02, -2.13220775e-01,
+           -5.01800716e-01,  2.13985220e-02, -3.78785277e-04,  3.76764052e-02,
+           -1.50542289e-01,  4.03295234e-02,  3.25406641e-01,  1.20190106e-01,
+            1.00255959e-01,  9.06978622e-02,  8.85991082e-02,  1.57696098e-01,
+           -3.51698659e-02,  4.02840137e-01, -2.34701447e-02, -1.46638170e-01,
+           -1.14586376e-01, -1.71307534e-01, -1.34530634e-01,  1.70941520e-02,
+           -1.62698463e-01, -2.61524379e-01,  4.83386591e-02,  1.38405904e-01,
+            3.82361114e-02,  1.36051252e-01, -9.19375569e-02,  2.21098721e-01,
+            4.79477316e-01,  1.41353086e-01, -2.88660824e-01,  1.52132332e-01,
+           -2.74485320e-01,  1.38044313e-01,  2.72632372e-02,  9.00184289e-02,
+           -1.01076765e-02, -6.93503022e-02, -2.30569899e-01,  9.60568637e-02,
+            1.47054285e-01, -2.53053635e-01, -1.36887422e-02,  2.93522596e-01,
+           -1.19452722e-01,  1.17573209e-01,  3.28345858e-02,  2.13188231e-01,
+           -1.58113152e-01, -3.92688960e-01, -1.19782530e-01,  1.47171784e-02,
+           -8.62376094e-02,  4.89073157e-01, -5.26246503e-02,  1.51341826e-01,
+           -1.32614389e-01, -2.28723101e-02,  3.85659426e-01, -1.17805719e-01,
+           -2.11446453e-02,  1.43716991e-01,  1.86417922e-01,  8.90968442e-02,
+           -1.47235528e-01, -3.06924582e-01, -3.52315158e-01, -4.88807112e-01,
+            2.40349710e-01,  2.76960254e-01, -1.05115332e-01, -4.35439348e-02,
+           -1.00465320e-01, -1.32709876e-01,  1.02236226e-01,  2.25574467e-02,
+           -7.36548528e-02, -8.65015462e-02,  4.10651207e-01,  4.27667052e-02,
+            1.47791591e-03,  4.97815982e-02, -4.72605303e-02, -1.05518542e-01,
+            5.78798167e-02, -2.08741706e-02,  2.17183959e-03, -1.79858267e-01,
+           -3.78274135e-02,  2.66649604e-01, -1.16654523e-01, -2.13188633e-01,
+            1.65979136e-02, -1.39415190e-01,  1.47022754e-01,  2.09375188e-01],
           dtype=float32)
 
 
@@ -5663,19 +5145,19 @@ wv.vectors
 
 
 
-    array([[ 2.76873916e-01,  1.83803201e-01,  2.84476489e-01, ...,
-            -1.05843592e+00,  1.04563355e+00, -1.01885712e+00],
-           [ 2.99914071e-04,  1.38045833e-01,  2.80075252e-01, ...,
-            -5.56849182e-01,  9.46540236e-01, -2.01369002e-01],
-           [ 2.78386146e-01,  5.39122336e-02, -3.57363671e-01, ...,
-             7.83293486e-01,  1.70851719e+00, -1.23066807e+00],
+    array([[ 2.9242423e-01,  7.4510354e-01,  1.4197147e-01, ...,
+            -4.5863187e-01,  2.8571410e-02, -7.1264851e-01],
+           [-3.4958524e-01,  7.8811604e-01,  2.9253495e-01, ...,
+             1.5906949e-01,  2.3833640e-01,  3.4809700e-01],
+           [-5.9380271e-02, -3.9695300e-02, -5.4707265e-01, ...,
+             1.3141860e+00,  1.0762907e+00, -1.3292576e+00],
            ...,
-           [ 1.76791963e-03,  1.27185816e-02,  1.74027160e-02, ...,
-            -4.42583039e-02,  6.29356056e-02, -4.80316393e-02],
-           [-1.10923415e-02,  3.84353064e-02, -6.00480847e-02, ...,
-             4.23184270e-03,  7.28718191e-03, -3.51879671e-02],
-           [-1.42478868e-02,  4.16393392e-02, -3.33269723e-02, ...,
-            -2.43994873e-02,  2.45368425e-02, -2.68926378e-02]], dtype=float32)
+           [-1.9461019e-02,  2.0938240e-02,  5.2417060e-03, ...,
+            -1.4613664e-02,  6.1093946e-04, -2.2308560e-02],
+           [ 2.8513556e-02, -3.8645808e-02, -1.9446509e-02, ...,
+            -4.4995070e-02,  1.1583727e-02, -2.3439007e-02],
+           [-1.5608729e-02, -4.6526408e-03, -3.2827316e-03, ...,
+            -5.6485850e-03,  2.1757590e-02,  4.2654656e-02]], dtype=float32)
 
 
 
@@ -5705,7 +5187,7 @@ plt.show()
 
 
     
-![png](Tweet_Analysis_files/Tweet_Analysis_166_0.png)
+![png](Tweet_Analysis_files/Tweet_Analysis_172_0.png)
     
 
 
@@ -5744,52 +5226,52 @@ df_google
     <tr>
       <th>0</th>
       <td>maps</td>
-      <td>0.929473</td>
+      <td>0.942716</td>
     </tr>
     <tr>
       <th>1</th>
-      <td>failing</td>
-      <td>0.922450</td>
+      <td>Wowwwwww</td>
+      <td>0.931714</td>
     </tr>
     <tr>
       <th>2</th>
-      <td>mobile</td>
-      <td>0.911939</td>
+      <td>tchin</td>
+      <td>0.923837</td>
     </tr>
     <tr>
       <th>3</th>
-      <td>Shout</td>
-      <td>0.893278</td>
+      <td>btw</td>
+      <td>0.916241</td>
     </tr>
     <tr>
       <th>4</th>
-      <td>cause</td>
-      <td>0.893064</td>
+      <td>150</td>
+      <td>0.915066</td>
     </tr>
     <tr>
       <th>5</th>
-      <td>Pearl</td>
-      <td>0.892217</td>
+      <td>surpassed</td>
+      <td>0.914751</td>
     </tr>
     <tr>
       <th>6</th>
-      <td>speaking</td>
-      <td>0.890346</td>
+      <td>Add</td>
+      <td>0.910935</td>
     </tr>
     <tr>
       <th>7</th>
-      <td>pandora</td>
-      <td>0.887791</td>
+      <td>another</td>
+      <td>0.905318</td>
     </tr>
     <tr>
       <th>8</th>
-      <td>smartphone</td>
-      <td>0.884425</td>
+      <td>gen</td>
+      <td>0.902506</td>
     </tr>
     <tr>
       <th>9</th>
-      <td>150</td>
-      <td>0.884131</td>
+      <td>rumors</td>
+      <td>0.901651</td>
     </tr>
   </tbody>
 </table>
@@ -5816,7 +5298,7 @@ plt.show()
 
 
     
-![png](Tweet_Analysis_files/Tweet_Analysis_168_0.png)
+![png](Tweet_Analysis_files/Tweet_Analysis_174_0.png)
     
 
 
@@ -5854,53 +5336,53 @@ df_apple
   <tbody>
     <tr>
       <th>0</th>
-      <td>Where</td>
-      <td>0.920323</td>
+      <td>comes</td>
+      <td>0.883024</td>
     </tr>
     <tr>
       <th>1</th>
-      <td>hook</td>
-      <td>0.910789</td>
+      <td>Ave</td>
+      <td>0.874297</td>
     </tr>
     <tr>
       <th>2</th>
-      <td>comes</td>
-      <td>0.891961</td>
+      <td>downstairs</td>
+      <td>0.873119</td>
     </tr>
     <tr>
       <th>3</th>
-      <td>scheduling</td>
-      <td>0.888684</td>
+      <td>boo</td>
+      <td>0.863546</td>
     </tr>
     <tr>
       <th>4</th>
-      <td>campus</td>
-      <td>0.873725</td>
+      <td>centre</td>
+      <td>0.843875</td>
     </tr>
     <tr>
       <th>5</th>
-      <td>short</td>
-      <td>0.872290</td>
+      <td>w/people</td>
+      <td>0.841283</td>
     </tr>
     <tr>
       <th>6</th>
-      <td>downstairs</td>
-      <td>0.854347</td>
+      <td>scheduling</td>
+      <td>0.838614</td>
     </tr>
     <tr>
       <th>7</th>
-      <td>igottagetit</td>
-      <td>0.852043</td>
+      <td>pop</td>
+      <td>0.838168</td>
     </tr>
     <tr>
       <th>8</th>
-      <td>drag</td>
-      <td>0.850543</td>
+      <td>xD</td>
+      <td>0.835714</td>
     </tr>
     <tr>
       <th>9</th>
-      <td>xD</td>
-      <td>0.843549</td>
+      <td>opens</td>
+      <td>0.830044</td>
     </tr>
   </tbody>
 </table>
@@ -5926,7 +5408,7 @@ plt.show()
 
 
     
-![png](Tweet_Analysis_files/Tweet_Analysis_170_0.png)
+![png](Tweet_Analysis_files/Tweet_Analysis_176_0.png)
     
 
 
@@ -6614,45 +6096,45 @@ history = model.fit(train,
 ```
 
     Epoch 1/20
-    45/45 [==============================] - 1s 7ms/step - loss: 1.1797 - acc: 0.6434 - val_loss: 0.6647 - val_acc: 0.8162
+    45/45 [==============================] - 1s 11ms/step - loss: 1.1329 - acc: 0.7339 - val_loss: 0.6482 - val_acc: 0.8162
     Epoch 2/20
-    45/45 [==============================] - 0s 3ms/step - loss: 0.5406 - acc: 0.8168 - val_loss: 0.6306 - val_acc: 0.8162
+    45/45 [==============================] - 0s 4ms/step - loss: 0.5271 - acc: 0.8037 - val_loss: 0.5969 - val_acc: 0.8134
     Epoch 3/20
-    45/45 [==============================] - 0s 4ms/step - loss: 0.4077 - acc: 0.8263 - val_loss: 0.6020 - val_acc: 0.8273
+    45/45 [==============================] - 0s 3ms/step - loss: 0.3266 - acc: 0.8925 - val_loss: 0.5757 - val_acc: 0.8357
     Epoch 4/20
-    45/45 [==============================] - 0s 3ms/step - loss: 0.2787 - acc: 0.9228 - val_loss: 0.5894 - val_acc: 0.8329
+    45/45 [==============================] - 0s 4ms/step - loss: 0.1697 - acc: 0.9527 - val_loss: 0.5984 - val_acc: 0.8384
     Epoch 5/20
-    45/45 [==============================] - 0s 4ms/step - loss: 0.1811 - acc: 0.9481 - val_loss: 0.5970 - val_acc: 0.8162
+    45/45 [==============================] - 0s 4ms/step - loss: 0.1019 - acc: 0.9660 - val_loss: 0.6322 - val_acc: 0.8412
     Epoch 6/20
-    45/45 [==============================] - 0s 4ms/step - loss: 0.1098 - acc: 0.9646 - val_loss: 0.6443 - val_acc: 0.8357
+    45/45 [==============================] - 0s 4ms/step - loss: 0.0746 - acc: 0.9744 - val_loss: 0.6516 - val_acc: 0.8273
     Epoch 7/20
-    45/45 [==============================] - 0s 4ms/step - loss: 0.0641 - acc: 0.9808 - val_loss: 0.6670 - val_acc: 0.8301
+    45/45 [==============================] - 0s 4ms/step - loss: 0.0518 - acc: 0.9889 - val_loss: 0.7120 - val_acc: 0.8329
     Epoch 8/20
-    45/45 [==============================] - 0s 3ms/step - loss: 0.0338 - acc: 0.9954 - val_loss: 0.7109 - val_acc: 0.8329
+    45/45 [==============================] - 0s 4ms/step - loss: 0.0269 - acc: 0.9938 - val_loss: 0.7488 - val_acc: 0.8384
     Epoch 9/20
-    45/45 [==============================] - 0s 3ms/step - loss: 0.0269 - acc: 0.9943 - val_loss: 0.7503 - val_acc: 0.8301
+    45/45 [==============================] - 0s 4ms/step - loss: 0.0250 - acc: 0.9937 - val_loss: 0.7861 - val_acc: 0.8357
     Epoch 10/20
-    45/45 [==============================] - 0s 3ms/step - loss: 0.0220 - acc: 0.9955 - val_loss: 0.8251 - val_acc: 0.8357
+    45/45 [==============================] - 0s 4ms/step - loss: 0.0230 - acc: 0.9947 - val_loss: 0.8327 - val_acc: 0.8412
     Epoch 11/20
-    45/45 [==============================] - 0s 3ms/step - loss: 0.0142 - acc: 0.9949 - val_loss: 0.8194 - val_acc: 0.8273
+    45/45 [==============================] - 0s 4ms/step - loss: 0.0143 - acc: 0.9970 - val_loss: 0.8769 - val_acc: 0.8412
     Epoch 12/20
-    45/45 [==============================] - 0s 3ms/step - loss: 0.0140 - acc: 0.9971 - val_loss: 0.8714 - val_acc: 0.8329
+    45/45 [==============================] - 0s 5ms/step - loss: 0.0169 - acc: 0.9937 - val_loss: 0.8605 - val_acc: 0.8329
     Epoch 13/20
-    45/45 [==============================] - 0s 3ms/step - loss: 0.0093 - acc: 0.9991 - val_loss: 0.8881 - val_acc: 0.8357
+    45/45 [==============================] - 0s 4ms/step - loss: 0.0121 - acc: 0.9955 - val_loss: 0.9023 - val_acc: 0.8384
     Epoch 14/20
-    45/45 [==============================] - 0s 3ms/step - loss: 0.0104 - acc: 0.9963 - val_loss: 0.9032 - val_acc: 0.8301
+    45/45 [==============================] - 0s 4ms/step - loss: 0.0147 - acc: 0.9937 - val_loss: 0.9005 - val_acc: 0.8245
     Epoch 15/20
-    45/45 [==============================] - 0s 3ms/step - loss: 0.0077 - acc: 0.9986 - val_loss: 0.9141 - val_acc: 0.8329
+    45/45 [==============================] - 0s 4ms/step - loss: 0.0139 - acc: 0.9944 - val_loss: 0.9751 - val_acc: 0.8412
     Epoch 16/20
-    45/45 [==============================] - 0s 4ms/step - loss: 0.0076 - acc: 0.9972 - val_loss: 0.9391 - val_acc: 0.8329
+    45/45 [==============================] - 0s 4ms/step - loss: 0.0122 - acc: 0.9966 - val_loss: 0.9334 - val_acc: 0.8134
     Epoch 17/20
-    45/45 [==============================] - 0s 3ms/step - loss: 0.0086 - acc: 0.9976 - val_loss: 0.9571 - val_acc: 0.8301
+    45/45 [==============================] - 0s 4ms/step - loss: 0.0090 - acc: 0.9957 - val_loss: 0.9934 - val_acc: 0.8412
     Epoch 18/20
-    45/45 [==============================] - 0s 3ms/step - loss: 0.0064 - acc: 0.9979 - val_loss: 0.9948 - val_acc: 0.8357
+    45/45 [==============================] - 0s 4ms/step - loss: 0.0092 - acc: 0.9981 - val_loss: 0.9536 - val_acc: 0.8217
     Epoch 19/20
-    45/45 [==============================] - 0s 3ms/step - loss: 0.0045 - acc: 0.9991 - val_loss: 0.9862 - val_acc: 0.8301
+    45/45 [==============================] - 0s 3ms/step - loss: 0.0080 - acc: 0.9976 - val_loss: 0.9951 - val_acc: 0.8273
     Epoch 20/20
-    45/45 [==============================] - 0s 3ms/step - loss: 0.0042 - acc: 0.9982 - val_loss: 1.0241 - val_acc: 0.8329
+    45/45 [==============================] - 0s 3ms/step - loss: 0.0127 - acc: 0.9961 - val_loss: 1.0090 - val_acc: 0.8329
     
 
 
@@ -6693,7 +6175,7 @@ plt.show()
 
 
     
-![png](Tweet_Analysis_files/Tweet_Analysis_215_0.png)
+![png](Tweet_Analysis_files/Tweet_Analysis_221_0.png)
     
 
 
@@ -6717,7 +6199,7 @@ plt.show()
 
 
     
-![png](Tweet_Analysis_files/Tweet_Analysis_216_0.png)
+![png](Tweet_Analysis_files/Tweet_Analysis_222_0.png)
     
 
 
@@ -6734,13 +6216,13 @@ results_train = model.evaluate(train, label_train)
 results_train
 ```
 
-    56/56 [==============================] - 0s 2ms/step - loss: 0.2092 - acc: 0.9654
+    56/56 [==============================] - 0s 1ms/step - loss: 0.2077 - acc: 0.9648
     
 
 
 
 
-    [0.20923849940299988, 0.96538245677948]
+    [0.20773755013942719, 0.9648241400718689]
 
 
 
@@ -6750,13 +6232,13 @@ results_test = model.evaluate(test, label_test)
 results_test # model predicts on the test data with almost 84% accuracy. 
 ```
 
-    47/47 [==============================] - 0s 2ms/step - loss: 0.8503 - acc: 0.8393
+    47/47 [==============================] - 0s 1ms/step - loss: 0.8366 - acc: 0.8427
     
 
 
 
 
-    [0.8503161668777466, 0.8393333554267883]
+    [0.8366084694862366, 0.8426666855812073]
 
 
 
@@ -7014,7 +6496,7 @@ plt.show()
 
 
     
-![png](Tweet_Analysis_files/Tweet_Analysis_233_0.png)
+![png](Tweet_Analysis_files/Tweet_Analysis_239_0.png)
     
 
 
@@ -7086,8 +6568,8 @@ print("Percentage of tweets targeting iPhones that are negative: {:.3f}".format(
 
 
 ```python
-sizes2 = [103, 184, 9, 1]
-labels2 = 'Negative', 'Positive', 'No Emotion', 'Uncertain'
+sizes2 = [103, 184, 9]
+labels2 = 'Negative', 'Positive', 'No Emotion'
 ```
 
 
@@ -7103,13 +6585,13 @@ plt.show()
 
 
     
-![png](Tweet_Analysis_files/Tweet_Analysis_238_0.png)
+![png](Tweet_Analysis_files/Tweet_Analysis_244_0.png)
     
 
 
 ### Recommendation
 
-In creating your phone, more users may want the option to have a more customizable user interface which the Android provides. We will need to look into more detail about what negative words users are including in their negative tweets that target iPhones to specifically determine users' complaints.
+#### In creating your phone, more users may want the option to have a more customizable user interface which the Android provides. We will need to look into more detail about what negative words users are including in their negative tweets that target iPhones to specifically determine users' complaints.
 
 ## Question 2 and Recommendation
 
@@ -7645,12 +7127,12 @@ stopped_android_tokens = [word.lower() for word in android_tokens if word.lower(
 
 
 ```python
-freq = FreqDist(stopped_android_tokens)
+freq_and = FreqDist(stopped_android_tokens)
 ```
 
 
 ```python
-freq.most_common(25)
+freq_and.most_common(25)
 ```
 
 
@@ -7682,6 +7164,32 @@ freq.most_common(25)
      ('excited', 3),
      ('beer', 3)]
 
+
+
+
+```python
+freq_and = pd.DataFrame(freq_and.most_common(25))
+```
+
+
+```python
+fig_dims = (20,8)
+fig, ax = plt.subplots(figsize=fig_dims)
+sns.set(font_scale=2)
+sns.set_style("darkgrid")
+palette = sns.set_palette("dark")
+ax = sns.barplot(x=freq_and.head(10)[0], y=freq_and.head(10)[1], palette=palette)
+ax.set(xlabel="Word",ylabel="Frequency")
+plt.ticklabel_format(style='plain',axis='y')
+plt.xticks(rotation=70)
+plt.title('Most Common Words in Positive Tweets About Android Phones')
+plt.show()
+```
+
+
+    
+![png](Tweet_Analysis_files/Tweet_Analysis_280_0.png)
+    
 
 
 ### Positive iPhone Sentiment
@@ -7739,38 +7247,28 @@ freq = FreqDist(stopped_iphone_tokens)
 
 
 ```python
-freq.most_common(25)
+freq = pd.DataFrame(freq.most_common(25))
 ```
 
 
+```python
+fig_dims = (20,8)
+fig, ax = plt.subplots(figsize=fig_dims)
+sns.set(font_scale=2)
+sns.set_style("darkgrid")
+palette = sns.set_palette("dark")
+ax = sns.barplot(x=freq.head(10)[0], y=freq.head(10)[1], palette=palette)
+ax.set(xlabel="Word",ylabel="Frequency")
+plt.ticklabel_format(style='plain',axis='y')
+plt.xticks(rotation=70)
+plt.title('Most Common Words in Positive Tweets About iPhones')
+plt.show()
+```
 
 
-    [('iphone', 176),
-     ('link', 53),
-     ('ipad', 17),
-     ('quot', 16),
-     ('amp', 15),
-     ('got', 14),
-     ('new', 13),
-     ('love', 11),
-     ('thanks', 9),
-     ('free', 9),
-     ('case', 8),
-     ('battery', 8),
-     ('charger', 8),
-     ('zazzlesxsw', 8),
-     ('like', 8),
-     ('phone', 7),
-     ('charging', 7),
-     ('w/', 7),
-     ('android', 7),
-     ('austin', 7),
-     ('sxswi', 7),
-     ('use', 7),
-     ('wow', 6),
-     ('best', 6),
-     ('year', 6)]
-
+    
+![png](Tweet_Analysis_files/Tweet_Analysis_287_0.png)
+    
 
 
 ### Recommendation
