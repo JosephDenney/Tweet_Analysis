@@ -31,23 +31,49 @@ def getList(dict):
     return dict.keys()
 
 def model_opt(models, x, y, xtest, ytest):
-    """Purpose: iterates through list of clf and will evaluate model and display the confusion matrix"""
+    """
+    Purpose --- iterates through list of clf and will evaluate model and display the confusion matrix
+    
+    args --- 
+        models: a list of instantiated models
+        x: training features
+        y: training target
+        xtest: test features
+        ytest: test target
+    
+    """
     for model in models:
         pipe = Pipeline(steps=[('model', model,)])
         fit = pipe.fit(x, y)
         ypred = model.predict(xtest)
-        score_report(ytest, ypred)
+        
         print(model," ", fit.score(xtest, ytest))
+        score_report(ytest, ypred)
+
         plot_confusion_matrix(model, xtest, ytest, values_format='1')
         plt.show()
+        print()
     pass
 
 def single_model_opt(model, x, y, xtest, ytest):
+    """
+    Purpose--- iterates through list of clf and will evaluate model and display the confusion matrix
+    
+    args --- 
+        model: a single instantiated model
+        x: training features
+        y: training target
+        xtest: test features
+        ytest: test target
+        
+    """
     pipe = Pipeline(steps=[('model', model)])
     fit = pipe.fit(x, y)
     ypred = model.predict(xtest)
-    score_report(ytest, ypred)
+    
     print(model," ", fit.score(xtest, ytest))
+    score_report(ytest, ypred)
+    
     plot_confusion_matrix(model, xtest, ytest, values_format='1')
     plt.show()
     pass
